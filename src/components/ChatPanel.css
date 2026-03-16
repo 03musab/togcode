@@ -1,0 +1,1045 @@
+/* src/components/ChatPanel.css — Premium Glassy Intelligence Hub */
+
+/* ============================================================================
+   CSS Variables Import (from App.css)
+   ============================================================================ */
+/* Assumes App.css variables are available:
+   - Glass opacity levels (--glass-xl through --glass-sm)
+   - Colors (--accent, --neon, --ai-brand, etc.)
+   - Timing (--ios-transition, --ios-bounce, --ios-ease-out)
+   - Effects (--glass-blur, --glass-shadow, etc.)
+*/
+
+/* ============================================================================
+   Chat Panel Container - Glass
+   ============================================================================ */
+
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 100%);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-left: 1px solid var(--border-glass);
+  overflow: hidden;
+  color: var(--text-main);
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ============================================================================
+   Header - Glass
+   ============================================================================ */
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-glass-soft);
+  background: rgba(0, 0, 0, 0.4);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.chat-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.chat-icon {
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  filter: drop-shadow(0 0 4px var(--neon-glow));
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.chat-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.chat-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin: 0;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  transition: var(--ios-transition);
+}
+
+.chat-stats {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  font-size: 11px;
+}
+
+.stat-badge {
+  background: var(--glass-sm);
+  backdrop-filter: var(--glass-blur-light);
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: var(--text-dim);
+  border: 1px solid var(--border-glass-soft);
+  font-weight: 500;
+  transition: var(--ios-transition);
+}
+
+.stat-badge:hover {
+  background: var(--glass-md);
+  border-color: var(--border-glass);
+}
+
+/* ============================================================================
+   Peers Container - Glass
+   ============================================================================ */
+
+.peers-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.peers-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-mute);
+  font-weight: 700;
+  margin: 0;
+}
+
+.peers-list {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.peer-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all var(--ios-bounce);
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 2px solid var(--bg-deep);
+  background: linear-gradient(135deg, var(--accent), rgba(0, 122, 255, 0.8));
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.peer-badge:hover {
+  transform: translateY(-4px) scale(1.15);
+  box-shadow: 0 8px 20px rgba(0, 122, 255, 0.4);
+  z-index: 10;
+}
+
+.peer-status {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--neon);
+  border-radius: 50%;
+  bottom: 0;
+  right: -2px;
+  border: 2px solid var(--bg-deep);
+  animation: pulse-dot 2s infinite;
+  box-shadow: 0 0 4px var(--neon-glow);
+}
+
+@keyframes pulse-dot {
+  0% {
+    box-shadow: 0 0 0 0 var(--neon-glow);
+  }
+
+  70% {
+    box-shadow: 0 0 0 6px rgba(48, 209, 88, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(48, 209, 88, 0);
+  }
+}
+
+/* ============================================================================
+   Messages Container
+   ============================================================================ */
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background: transparent;
+  scroll-behavior: smooth;
+}
+
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================================================
+   Empty State - Glass
+   ============================================================================ */
+
+.chat-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 16px;
+  padding: 40px;
+  text-align: center;
+  color: var(--text-dim);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
+}
+
+.chat-empty-icon {
+  font-size: 48px;
+  filter: drop-shadow(0 0 10px var(--neon-glow));
+  animation: float 3s infinite ease-in-out;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.chat-empty h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-main);
+  letter-spacing: -0.3px;
+}
+
+.chat-empty p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  max-width: 280px;
+  color: var(--text-dim);
+}
+
+.chat-empty-hints {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.hint-item {
+  padding: 12px 14px;
+  background: var(--glass-sm);
+  backdrop-filter: var(--glass-blur-light);
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  border-left: 3px solid var(--accent);
+  text-align: left;
+  transition: var(--ios-transition);
+  border: 1px solid var(--border-glass-soft);
+}
+
+.hint-item:hover {
+  background: var(--glass-md);
+  border-color: var(--accent);
+  transform: translateX(2px);
+}
+
+/* ============================================================================
+   Message Row - Glass
+   ============================================================================ */
+
+.chat-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: fadeIn 0.3s ease-out;
+  position: relative;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-msg.mine {
+  align-items: flex-end;
+}
+
+.chat-msg-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  margin-bottom: 2px;
+  font-weight: 600;
+}
+
+.chat-msg-sender {
+  font-weight: 700;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  transition: var(--ios-transition);
+}
+
+.chat-msg.ai .chat-msg-sender {
+  color: var(--ai-brand);
+  text-shadow: 0 0 8px rgba(255, 214, 10, 0.2);
+}
+
+.chat-msg.mine .chat-msg-sender {
+  color: var(--accent);
+  text-shadow: 0 0 8px rgba(0, 122, 255, 0.2);
+}
+
+.chat-msg-time {
+  color: var(--text-mute);
+  font-size: 0.65rem;
+  font-weight: 400;
+  opacity: 0.6;
+}
+
+/* ============================================================================
+   Message Bubble - Glass
+   ============================================================================ */
+
+.chat-bubble-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+
+.chat-msg.mine .chat-bubble-container {
+  flex-direction: row-reverse;
+}
+
+.chat-msg-bubble {
+  padding: 14px 18px;
+  border-radius: 18px;
+  word-wrap: break-word;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  transition: all var(--ios-transition);
+  position: relative;
+  max-width: 85%;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid transparent;
+  box-shadow: var(--glass-shadow-sm);
+}
+
+/* ─── AI Message (Yellow/Gold) ─── */
+.chat-msg.ai .chat-msg-bubble {
+  background: linear-gradient(135deg, rgba(255, 214, 10, 0.15), rgba(255, 214, 10, 0.08));
+  border: 1px solid rgba(255, 214, 10, 0.25);
+  color: var(--text-main);
+  border-top-left-radius: 4px;
+  box-shadow: 0 4px 16px rgba(255, 214, 10, 0.1);
+}
+
+.chat-msg.ai .chat-msg-bubble:hover {
+  background: linear-gradient(135deg, rgba(255, 214, 10, 0.2), rgba(255, 214, 10, 0.12));
+  border-color: rgba(255, 214, 10, 0.4);
+  box-shadow: 0 0 20px rgba(255, 214, 10, 0.15);
+}
+
+/* ─── User Own Message (Blue) ─── */
+.chat-msg.mine .chat-msg-bubble {
+  background: linear-gradient(135deg, var(--accent), rgba(0, 122, 255, 0.7));
+  color: #fff;
+  border-top-right-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 122, 255, 0.25);
+}
+
+.chat-msg.mine .chat-msg-bubble:hover {
+  background: linear-gradient(135deg, var(--accent), rgba(0, 122, 255, 0.8));
+  box-shadow: 0 0 20px rgba(0, 122, 255, 0.4);
+}
+
+/* ─── Peer Message (Glass White) ─── */
+.chat-msg.theirs .chat-msg-bubble {
+  background: var(--glass-md);
+  border: 1px solid var(--border-glass);
+  color: var(--text-main);
+  border-top-left-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.chat-msg.theirs .chat-msg-bubble:hover {
+  background: var(--glass-lg);
+  border-color: var(--border-glass-bright);
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.2);
+}
+
+/* ─── Message Selection ─── */
+.chat-msg.selected .chat-msg-bubble {
+  box-shadow: 0 0 0 2px var(--accent), 0 8px 24px rgba(0, 0, 0, 0.3);
+  transform: scale(1.02);
+}
+
+/* ============================================================================
+   AI Thinking State - Glass
+   ============================================================================ */
+
+.chat-msg.ai-thinking {
+  align-items: flex-start;
+}
+
+.chat-msg-bubble.thinking {
+  display: flex;
+  gap: 6px;
+  padding: 14px 18px;
+  width: fit-content;
+  background: linear-gradient(135deg, rgba(255, 214, 10, 0.15), rgba(255, 214, 10, 0.08));
+  border: 1px solid rgba(255, 214, 10, 0.25);
+  border-top-left-radius: 4px;
+}
+
+.thinking-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ai-brand);
+  animation: thinking-bounce 1.4s infinite;
+  box-shadow: 0 0 4px var(--ai-brand);
+}
+
+.thinking-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.thinking-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes thinking-bounce {
+
+  0%,
+  80%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+
+  40% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+
+/* ============================================================================
+   Message Content - Glass
+   ============================================================================ */
+
+.message-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.message-content strong {
+  font-weight: 700;
+  color: #fff;
+}
+
+.message-content em {
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.message-content a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all var(--ios-transition);
+  font-weight: 500;
+}
+
+.message-content a:hover {
+  border-bottom-color: var(--accent);
+  text-decoration: underline;
+}
+
+/* ============================================================================
+   Code Block - Glass Premium
+   ============================================================================ */
+
+.chat-code-wrapper {
+  background: var(--glass-dark);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-glass);
+  border-radius: 14px;
+  overflow: hidden;
+  margin: 12px 0;
+  box-shadow: var(--glass-shadow-sm);
+  transition: var(--ios-transition);
+}
+
+.chat-code-wrapper:hover {
+  border-color: var(--border-glass-bright);
+  box-shadow: var(--glass-shadow);
+}
+
+.chat-code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border-bottom: 1px solid var(--border-glass-soft);
+  font-size: 11px;
+}
+
+.chat-code-lang {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--neon);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 6px rgba(48, 209, 88, 0.2);
+}
+
+.code-copy-btn {
+  background: var(--glass-sm);
+  backdrop-filter: var(--glass-blur-light);
+  border: 1px solid var(--border-glass-soft);
+  color: var(--text-dim);
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  transition: all var(--ios-transition);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.code-copy-btn:hover {
+  background: var(--glass-md);
+  border-color: var(--neon);
+  color: var(--neon);
+  box-shadow: 0 0 12px rgba(48, 209, 88, 0.2);
+  transform: translateY(-1px);
+}
+
+.code-copy-btn:active {
+  transform: translateY(0);
+}
+
+.chat-code-block {
+  margin: 0;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--neon);
+  text-shadow: 0 0 4px rgba(48, 209, 88, 0.1);
+  background: transparent;
+}
+
+.chat-code-block::-webkit-scrollbar {
+  height: 4px;
+}
+
+.chat-code-block::-webkit-scrollbar-thumb {
+  background: rgba(48, 209, 88, 0.2);
+  border-radius: 2px;
+}
+
+.chat-code-block::-webkit-scrollbar-thumb:hover {
+  background: rgba(48, 209, 88, 0.4);
+}
+
+/* ============================================================================
+   Message Actions - Glass
+   ============================================================================ */
+
+.chat-msg-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: all var(--ios-transition);
+  pointer-events: none;
+}
+
+.chat-msg:hover .chat-msg-actions {
+  opacity: 0.8;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.chat-msg-actions:hover {
+  opacity: 1 !important;
+}
+
+.msg-action-btn {
+  background: var(--glass-md);
+  backdrop-filter: var(--glass-blur-light);
+  border: 1px solid var(--border-glass);
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  transition: all var(--ios-transition);
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.msg-action-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  transform: translateY(-2px) scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+}
+
+.msg-action-btn:active {
+  transform: translateY(0) scale(1);
+}
+
+/* ============================================================================
+   Typing Indicator - Glass
+   ============================================================================ */
+
+.chat-typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--glass-sm);
+  backdrop-filter: var(--glass-blur-light);
+  border: 1px solid var(--border-glass-soft);
+  border-radius: 14px;
+  margin-top: 4px;
+  width: fit-content;
+  animation: slideInUp var(--ios-ease-out);
+}
+
+.typing-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.typing-dots span {
+  width: 5px;
+  height: 5px;
+  background: var(--text-mute);
+  border-radius: 50%;
+  animation: typing-dot-bounce 1s infinite alternate;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.1);
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing-dot-bounce {
+  from {
+    opacity: 0.3;
+    transform: scale(0.8) translateY(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.1) translateY(-3px);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.typing-text {
+  font-size: 11px;
+  color: var(--text-mute);
+  font-weight: 600;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* ============================================================================
+   Scroll to Bottom Button - Glass
+   ============================================================================ */
+
+.scroll-to-bottom-btn {
+  position: absolute;
+  bottom: 130px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), rgba(0, 122, 255, 0.8));
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: all var(--ios-transition);
+  z-index: 10;
+  animation: slideInUp var(--ios-ease-out);
+  font-weight: 600;
+}
+
+.scroll-to-bottom-btn:hover {
+  transform: translateY(-4px) scale(1.1);
+  box-shadow: 0 0 24px var(--accent-glow);
+  filter: brightness(1.1);
+}
+
+.scroll-to-bottom-btn:active {
+  transform: translateY(-2px) scale(1);
+}
+
+/* ============================================================================
+   Input Row - Glass Premium
+   ============================================================================ */
+
+.chat-input-row {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 100%);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-top: 1px solid var(--border-glass-soft);
+  flex-shrink: 0;
+  align-items: flex-end;
+  position: relative;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.input-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--glass-md);
+  backdrop-filter: var(--glass-blur-light);
+  -webkit-backdrop-filter: var(--glass-blur-light);
+  border: 1px solid var(--border-glass-soft);
+  border-radius: 20px;
+  transition: all var(--ios-transition);
+  min-width: 0;
+  overflow: hidden;
+  box-shadow: var(--glass-shadow-sm);
+}
+
+.input-wrapper:focus-within {
+  border-color: var(--accent);
+  background: var(--glass-lg);
+  box-shadow: 0 0 20px rgba(0, 122, 255, 0.2), var(--glass-shadow);
+  transform: translateY(-1px);
+}
+
+.chat-input {
+  width: 100%;
+  padding: 12px 16px 6px 16px;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  resize: none;
+  max-height: 200px;
+  line-height: 1.5;
+  outline: none;
+  box-sizing: border-box;
+  font-weight: 500;
+}
+
+.chat-input::placeholder {
+  color: var(--text-mute);
+  font-weight: 400;
+}
+
+.input-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: var(--text-mute);
+  padding: 0 16px 10px 16px;
+  pointer-events: none;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-weight: 600;
+}
+
+.char-count {
+  font-weight: 700;
+}
+
+.input-hints {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+/* ============================================================================
+   Send Button - Glass
+   ============================================================================ */
+
+.chat-send-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--accent), rgba(0, 122, 255, 0.8));
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: all var(--ios-transition);
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px var(--accent-glow);
+  margin-bottom: 2px;
+  position: relative;
+  overflow: hidden;
+  font-weight: 700;
+}
+
+.chat-send-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  background-size: 200% 100%;
+  opacity: 0;
+  transition: opacity var(--ios-transition);
+}
+
+.chat-send-btn:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.08);
+  box-shadow: 0 0 24px var(--accent-glow);
+  background: linear-gradient(135deg, var(--accent), rgba(0, 122, 255, 0.9));
+}
+
+.chat-send-btn:hover:not(:disabled)::before {
+  opacity: 1;
+  animation: shimmer 0.6s;
+}
+
+.chat-send-btn:active:not(:disabled) {
+  transform: translateY(-1px) scale(1);
+}
+
+.chat-send-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* ============================================================================
+   Loading Animation
+   ============================================================================ */
+
+.send-loading {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================================
+   Responsive & Mobile
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .chat-header {
+    padding: 12px 14px;
+  }
+
+  .chat-msg-bubble {
+    max-width: 90%;
+  }
+
+  .scroll-to-bottom-btn {
+    bottom: 90px;
+    right: 16px;
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+  }
+
+  .chat-msg-actions {
+    opacity: 0.6;
+  }
+
+  .chat-input-row {
+    padding: 12px 14px;
+  }
+
+  .input-footer {
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-panel {
+    border-left: none;
+  }
+
+  .chat-header {
+    padding: 10px 12px;
+  }
+
+  .peers-label {
+    display: none;
+  }
+
+  .chat-msg-bubble {
+    max-width: 95%;
+    font-size: 0.9rem;
+  }
+
+  .chat-code-block {
+    font-size: 0.75rem;
+  }
+}
+
+/* ============================================================================
+   Accessibility
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .chat-msg-bubble {
+    border-width: 2px;
+  }
+
+  .chat-input {
+    border: 2px solid var(--accent);
+  }
+
+  .chat-send-btn {
+    border: 2px solid white;
+  }
+}
+
+/* ============================================================================
+   Focus Visible States
+   ============================================================================ */
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

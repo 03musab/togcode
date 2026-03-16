@@ -2,9 +2,10 @@
 // Replace these with your actual Firebase config values
 import { initializeApp } from 'firebase/app';
 import { getDatabase } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "[GCP_API_KEY]",
+  apiKey: "AIzaSyCp6gO-G7RgQYbvhdfF0lhQfuB1YQivMfc",
   authDomain: "studio-4251301193-d6f62.firebaseapp.com",
   databaseURL: "https://studio-4251301193-d6f62-default-rtdb.asia-southeast1.firebasedatabase.app/",
   projectId: "studio-4251301193-d6f62",
@@ -16,3 +17,4 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app);
+export const auth = getAuth(app);

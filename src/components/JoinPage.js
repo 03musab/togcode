@@ -22,18 +22,18 @@ export default function JoinPage({ onJoin }) {
     <div className="join-page">
       <div className="join-card">
         <div className="join-logo">
-          <span className="logo-vibe">vibe</span>
+          <span className="logo-tog">tog</span>
           <span className="logo-code">code</span>
         </div>
-        <p className="join-tagline">Pair program with AI in the room.</p>
+        <p className="join-tagline">The premium collaborative coding playground.</p>
 
         {!mode && (
           <div className="join-actions">
             <button className="btn-primary" onClick={() => setMode('create')}>
-              Create Room
+              Create New Suite
             </button>
             <button className="btn-secondary" onClick={() => setMode('join')}>
-              Join Room
+              Join Existing Room
             </button>
           </div>
         )}
@@ -42,7 +42,7 @@ export default function JoinPage({ onJoin }) {
           <div className="join-form">
             <input
               className="join-input"
-              placeholder="Your name"
+              placeholder="Display Name"
               value={name}
               onChange={e => setName(e.target.value)}
               autoFocus
@@ -50,29 +50,29 @@ export default function JoinPage({ onJoin }) {
             {mode === 'join' && (
               <input
                 className="join-input"
-                placeholder="Room code"
+                placeholder="Room Code (e.g. A1B2C3D4)"
                 value={roomCode}
                 onChange={e => setRoomCode(e.target.value.toUpperCase())}
                 maxLength={8}
               />
             )}
             <div className="join-form-actions">
-              <button className="btn-ghost" onClick={() => setMode(null)}>← Back</button>
+              <button className="btn-ghost" onClick={() => setMode(null)}>← Go Back</button>
               <button
                 className="btn-primary"
                 onClick={mode === 'create' ? handleCreate : handleJoin}
                 disabled={!name.trim() || (mode === 'join' && !roomCode.trim())}
               >
-                {mode === 'create' ? 'Create & Enter' : 'Join Room'}
+                {mode === 'create' ? 'Launch Suite' : 'Enter Room'}
               </button>
             </div>
           </div>
         )}
 
         <div className="join-features">
-          <span>⚡ Real-time sync</span>
-          <span>🤖 Shared AI chat</span>
-          <span>👥 Live cursors</span>
+          <div className="feature-pill">⚡ Dynamic Sync</div>
+          <div className="feature-pill">🤖 Project AI</div>
+          <div className="feature-pill">👥 Live Collab</div>
         </div>
       </div>
     </div>

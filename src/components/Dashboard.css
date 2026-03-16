@@ -1,0 +1,142 @@
+.dashboard-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-deep);
+  padding: 40px;
+  overflow-y: auto;
+}
+
+.dashboard-content {
+  max-width: 800px;
+  width: 100%;
+  animation: fadeIn 0.6s ease;
+}
+
+.dashboard-header-greet {
+  margin-bottom: 40px;
+}
+
+.greet-text {
+  color: var(--accent);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.85rem;
+}
+
+.dashboard-header-greet h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-top: 8px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 24px;
+}
+
+.dash-card {
+  background: var(--glass-md);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-glass-soft);
+  border-radius: 24px;
+  padding: 32px;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.dash-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-glass);
+}
+
+.dash-card.main {
+  grid-row: span 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.dash-card-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.dash-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+  color: var(--text-main);
+}
+
+.dash-card p {
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.dash-card.stats {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.stat-label {
+  color: var(--text-mute);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.info-list {
+  padding-left: 20px;
+  margin-top: 16px;
+  color: var(--text-dim);
+}
+
+.info-list li {
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.dashboard-footer {
+  margin-top: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-glass-soft);
+}
+
+.footer-logo {
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.footer-ver {
+  font-size: 0.8rem;
+  color: var(--text-mute);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
