@@ -80,7 +80,7 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <div className="header-left">
-          <div className="splash-logo" style={{ fontSize: '1.4rem' }}>
+          <div className="splash-logo">
             <span className="logo-tog">tog</span>
             <span className="logo-code">code</span>
           </div>

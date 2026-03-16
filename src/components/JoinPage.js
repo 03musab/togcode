@@ -237,29 +237,65 @@ export default function JoinPage({ user, onLogout, onJoin }) {
               )}
               <div className="tc-form-row">
                 <button className="btn-ghost" onClick={() => transition(null)}>
-                  ← back
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
+                    <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                  </svg>
+                  back
                 </button>
-                <button
-                  className="btn-primary btn-inline"
-                  onClick={mode === 'create' ? handleCreate : handleJoin}
-                  disabled={!canProceed}
-                >
-                  {mode === 'create' ? 'Launch suite →' : 'Enter room →'}
-                </button>
+                  <button
+                    className="btn-primary btn-inline"
+                    onClick={mode === 'create' ? handleCreate : handleJoin}
+                    disabled={!canProceed}
+                  >
+                    {mode === 'create' ? (
+                      <>
+                        Launch suite
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '6px' }}>
+                          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                      </>
+                    ) : (
+                      <>
+                        Enter room
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '6px' }}>
+                          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                      </>
+                    )}
+                  </button>
               </div>
             </div>
           )}
         </div>
 
         <div className="tc-ticker">
-          <div className="ticker-sparkle">✨</div>
+          <div className="ticker-sparkle">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </div>
           <div className="ticker-content">Try asking AI to 'Analyze the architecture' of your room's history.</div>
         </div>
 
         <div className="tc-pills" style={{ marginTop: '1rem' }}>
-          <span className="tc-pill">⚡ dynamic sync</span>
-          <span className="tc-pill">🤖 Intelligence AI</span>
-          <span className="tc-pill">👥 live collab</span>
+          <span className="tc-pill">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+            dynamic sync
+          </span>
+          <span className="tc-pill">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
+              <path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/>
+            </svg>
+            Intelligence AI
+          </span>
+          <span className="tc-pill">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            live collab
+          </span>
         </div>
       </div>
     </div>

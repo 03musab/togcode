@@ -66,11 +66,23 @@ body {
 
 .splash-logo {
   font-weight: 800;
-  letter-spacing: -1px;
+  letter-spacing: -2px;
+  text-transform: lowercase;
+  display: flex;
+  align-items: center;
+}
+
+.header-left .splash-logo {
+  font-size: 1.5rem;
+  letter-spacing: -1.2px;
+  text-shadow: 0 0 15px rgba(0, 122, 255, 0.4);
 }
 
 .logo-tog { color: #fff; }
-.logo-code { color: var(--accent); }
+.logo-code { 
+  color: var(--accent); 
+  text-shadow: 0 0 10px var(--accent-glow);
+}
 
 .room-info-pill {
   display: flex;
@@ -211,17 +223,44 @@ body {
   inset: 0;
   background: #000;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 1000;
 }
 
-.thinking-dots { display: flex; gap: 8px; }
+.splash-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.splash-logo {
+  font-size: 5rem;
+  font-weight: 800;
+  letter-spacing: -4px;
+  animation: logoPulse 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  text-shadow: 0 0 50px rgba(0, 122, 255, 0.3);
+}
+
+@keyframes logoPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+.thinking-dots { 
+  display: flex; 
+  gap: 16px; 
+}
+
 .thinking-dots span {
-  width: 10px; height: 10px;
+  width: 14px; 
+  height: 14px;
   background: var(--accent);
   border-radius: 50%;
   animation: bounce 1.4s infinite ease-in-out both;
+  box-shadow: 0 0 15px var(--accent-glow);
 }
 
 @keyframes bounce {

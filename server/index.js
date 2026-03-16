@@ -15,19 +15,38 @@ app.get('/api/status', (req, res) => {
   res.json({
     status: 'operational',
     service: 'Intelligence Hub Backend',
-    version: '1.0.0',
+    version: 'Togcode 120B',
     timestamp: new Date().toISOString()
   });
 });
 
-// AI Proxy Endpoint
+// AI Proxy Endpoint with Tiered Response Times
 app.post('/api/chat', async (req, res) => {
   const { messages, model, temperature, max_tokens } = req.body;
   
-  // Use environment variable for security
-  const API_KEY = process.env.CEREBRAS_API_KEY || 'csk-yjmhny5wcyh5dmt4wf9f5mp3k6w4cvkerw2vrh4ceyxh46vr';
+  // Model Tier Logic
+  const modelTiers = {
+    'gpt-oss-120b': { cerebras: 'llama3.1-70b', delay: 0 },
+    'togcode-3-lite': { cerebras: 'llama3.1-8b', delay: 1000 },
+    'togcode-2-legacy': { cerebras: 'llama3.1-8b', delay: 2500 }
+  };
+
+  const selectedTier = modelTiers[model] || modelTiers['gpt-oss-120b'];
+  const cerebrasModel = selectedTier.cerebras;
+  const artificialDelay = selectedTier.delay;
+
+  const API_KEY = process.env.CEREBRAS_API_KEY;
+  if (!API_KEY) {
+    console.error('❌ CRITICAL ERROR: CEREBRAS_API_KEY is missing in .env');
+    return res.status(500).json({ error: 'Backend configuration error: API Key missing' });
+  }
 
   try {
+    // Simulate Tiered Performance for non-Pro models
+    if (artificialDelay > 0) {
+      await new Promise(resolve => setTimeout(resolve, artificialDelay));
+    }
+
     const response = await fetch('https://api.cerebras.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -35,7 +54,7 @@ app.post('/api/chat', async (req, res) => {
         'Authorization': `Bearer ${API_KEY}`
       },
       body: JSON.stringify({
-        model: model || 'llama3.1-8b',
+        model: cerebrasModel,
         messages,
         temperature: temperature || 0.6,
         max_tokens: max_tokens || 1500
@@ -43,15 +62,18 @@ app.post('/api/chat', async (req, res) => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      return res.status(response.status).json(errorData);
+      const errorData = await response.json().catch(() => ({}));
+      console.error('Cerebras API Error:', errorData);
+      return res.status(response.status).json({ 
+        error: errorData.error?.message || response.statusText 
+      });
     }
 
     const data = await response.json();
     res.json(data);
   } catch (error) {
     console.error('AI Proxy Error:', error);
-    res.status(500).json({ error: 'Failed to communicate with AI provider' });
+    res.status(500).json({ error: 'Failed to communicate with Intelligence Engine (Cerebras)' });
   }
 });
 

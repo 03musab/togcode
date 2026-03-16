@@ -79,14 +79,44 @@ export default function AuthPage({ onAuthSuccess }) {
           </button>
 
           <button className="btn-ghost" onClick={switchMode}>
-            {isLogin ? "Don't have an account? Sign up →" : 'Already have an account? Sign in →'}
+            {isLogin ? (
+              <>
+                Don't have an account? Sign up
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '6px' }}>
+                  <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </>
+            ) : (
+              <>
+                Already have an account? Sign in
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '6px' }}>
+                  <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </>
+            )}
           </button>
         </div>
 
         <div className="tc-pills">
-          <span className="tc-pill">🔒 secure auth</span>
-          <span className="tc-pill">🛠️ personal workspace</span>
-          <span className="tc-pill">🌍 global access</span>
+          <span className="tc-pill">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            secure auth
+          </span>
+          <span className="tc-pill">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a2 2 0 0 1-2.14-.32 2 2 0 0 1-.32-2.14z"/>
+              <path d="M10.2 3.7a2 2 0 0 1 2.14.32 2 2 0 0 1 .32 2.14L9 10l-2.12 2.12a2 2 0 0 0 0 2.83l.05.05a2 2 0 0 1 0 2.83l-1.41 1.42a2 2 0 0 1-2.83 0L1.27 18a2 2 0 0 1 0-2.83l1.42-1.41a2 2 0 0 1 2.83 0l.05.05a2 2 0 0 0 2.83 0L10.5 11l3.77-3.77z"/>
+            </svg>
+            personal workspace
+          </span>
+          <span className="tc-pill">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
+              <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+            global access
+          </span>
         </div>
       </div>
     </div>

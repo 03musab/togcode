@@ -5,345 +5,284 @@ import { db } from '../lib/firebase';
 import { v4 as uuidv4 } from 'uuid';
 
 // ============================================================================
-// Advanced Configuration
+// Configuration
 // ============================================================================
 
 const DEBOUNCE_DELAY = 300;
-const CURSOR_UPDATE_THROTTLE = 100;
 const TYPING_TIMEOUT = 2000;
 const MAX_CHAT_HISTORY = 50;
-const MAX_FILE_PREVIEW = 3000;
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-const IDLE_THRESHOLD = 60000; // 1 minute
-
-// ============================================================================
-// Smart AI Configuration
-// ============================================================================
+const IDLE_THRESHOLD = 60000;
 
 const AI_CONFIG = {
-  model: 'llama3.1-8b',
+  model: 'togcode-3-lite',
   temperature: 0.6,
   max_tokens: 1500,
 };
+
+// How many chat turns to send as context
+const AI_CONTEXT_WINDOW = 10;
 
 // ============================================================================
 // useRoom Hook
 // ============================================================================
 
 export function useRoom(roomId, userId, userName, userEmail) {
-  // ========== Core State ==========
   const [chatHistory, setChatHistory] = useState([]);
   const [peers, setPeers] = useState({});
   const [aiThinking, setAiThinking] = useState(false);
   const [typingStatus, setTypingStatus] = useState({});
-
-  // ========== Enhanced State ==========
-  const [connectionStatus, setConnectionStatus] = useState('connecting'); // 'connecting', 'connected', 'offline'
+  const [connectionStatus, setConnectionStatus] = useState('connecting');
   const [syncErrors, setSyncErrors] = useState([]);
-  const [lastSync, setLastSync] = useState(Date.now());
   const [idlePeers, setIdlePeers] = useState(new Set());
   const [stats, setStats] = useState({ messagesSent: 0 });
 
-  // ========== Refs ==========
   const typingTimeoutRef = useRef(null);
   const aiAbortControllerRef = useRef(null);
+  const chatHistoryRef = useRef(chatHistory); // stable ref for callbacks
 
-  // ========== Derived State ==========
-  const activePeers = useMemo(() => {
-    return Object.entries(peers)
+  useEffect(() => { chatHistoryRef.current = chatHistory; }, [chatHistory]);
+
+  const activePeers = useMemo(() =>
+    Object.entries(peers)
       .filter(([uid, peer]) => uid !== userId && peer?.online)
-      .map(([uid, peer]) => ({ ...peer, id: uid }));
-  }, [peers, userId]);
+      .map(([uid, peer]) => ({ ...peer, id: uid })),
+    [peers, userId]
+  );
 
-  // ========== Presence Sync ==========
+  // ========== Error Handler ==========
+
+  const handleSyncError = useCallback((source, error) => {
+    console.error(`[useRoom] ${source}:`, error);
+    setSyncErrors(prev => [...prev.slice(-9), `${source}: ${error.message}`]);
+  }, []);
+
+  // ========== Presence ==========
+
   useEffect(() => {
     if (!roomId || !userId) return;
-
     const presenceRef = ref(db, `rooms/${roomId}/peers/${userId}`);
-    const userPresence = {
-      name: userName,
-      email: userEmail,
+
+    set(presenceRef, {
+      name: userName, email: userEmail,
       lastSeen: serverTimestamp(),
       color: getUserColor(userId),
-      online: true,
-      status: 'active',
-      stats: stats
-    };
+      online: true, status: 'active',
+    }).catch(err => handleSyncError('presence', err));
 
-    try {
-      set(presenceRef, userPresence).catch(err => {
-        handleSyncError('presence', err);
-      });
-      onDisconnect(presenceRef).remove();
-    } catch (err) {
-      handleSyncError('presence', err);
-    }
+    onDisconnect(presenceRef).remove();
 
     const peersRef = ref(db, `rooms/${roomId}/peers`);
-    const unsubscribe = onValue(peersRef, snap => {
-      try {
-        const peersData = snap.val() || {};
-        setPeers(peersData);
-        setConnectionStatus('connected');
-        updateIdlePeers(peersData);
-      } catch (err) {
-        handleSyncError('peers', err);
-      }
-    }, err => {
-      handleSyncError('peers', err);
-      setConnectionStatus('offline');
-    });
+    const unsub = onValue(peersRef, snap => {
+      const data = snap.val() || {};
+      setPeers(data);
+      setConnectionStatus('connected');
+      const now = Date.now();
+      const idle = new Set(
+        Object.entries(data)
+          .filter(([uid, p]) => uid !== userId && p?.lastSeen && now - p.lastSeen > IDLE_THRESHOLD)
+          .map(([uid]) => uid)
+      );
+      setIdlePeers(idle);
+    }, err => { handleSyncError('peers', err); setConnectionStatus('offline'); });
 
-    return () => {
-      set(presenceRef, null);
-      off(peersRef);
-      unsubscribe();
-    };
-  }, [roomId, userId, userName, stats]);
+    return () => { set(presenceRef, null); off(peersRef); unsub(); };
+  }, [roomId, userId, userName, userEmail, handleSyncError]);
 
-  // ========== Chat History Sync ==========
+  // ========== Chat Sync ==========
+
   useEffect(() => {
     if (!roomId) return;
-
     const chatRef = ref(db, `rooms/${roomId}/chat`);
-    const limitedChatQuery = query(chatRef, limitToLast(MAX_CHAT_HISTORY));
+    const chatQuery = query(chatRef, limitToLast(MAX_CHAT_HISTORY));
 
-    const unsubscribe = onValue(limitedChatQuery, snap => {
-      try {
-        const val = snap.val();
-        if (val) {
-          const msgs = Object.entries(val)
-            .map(([id, msg]) => ({ id, ...msg }))
-            .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
-          setChatHistory(msgs);
-        }
-      } catch (err) {
-        handleSyncError('chat', err);
-      }
-    }, err => {
-      handleSyncError('chat', err);
-    });
+    const unsub = onValue(chatQuery, snap => {
+      const val = snap.val();
+      if (!val) return;
+      const msgs = Object.entries(val)
+        .map(([id, msg]) => ({ id, ...msg }))
+        .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+      setChatHistory(msgs);
+    }, err => handleSyncError('chat', err));
 
-    return () => {
-      off(chatRef);
-      unsubscribe();
-    };
-  }, [roomId]);
+    return () => { off(chatRef); unsub(); };
+  }, [roomId, handleSyncError]);
 
-  // ========== Typing Status Sync ==========
+  // ========== Typing Status ==========
+
   useEffect(() => {
     if (!roomId) return;
-
     const typingRef = ref(db, `rooms/${roomId}/typing`);
     const myTypingRef = ref(db, `rooms/${roomId}/typing/${userId}`);
     onDisconnect(myTypingRef).remove();
 
-    const unsubscribe = onValue(typingRef, snap => {
-      try {
-        const val = snap.val() || {};
-        const othersTyping = {};
-        const now = Date.now();
+    const unsub = onValue(typingRef, snap => {
+      const val = snap.val() || {};
+      const now = Date.now();
+      const others = Object.fromEntries(
+        Object.entries(val).filter(([uid, d]) =>
+          uid !== userId && d?.isTyping && now - (d.timestamp || 0) < TYPING_TIMEOUT
+        )
+      );
+      setTypingStatus(others);
+    }, err => handleSyncError('typing', err));
 
-        Object.entries(val).forEach(([uid, data]) => {
-          if (uid !== userId && data?.isTyping && (now - (data.timestamp || 0)) < TYPING_TIMEOUT) {
-            othersTyping[uid] = data;
-          }
-        });
-        setTypingStatus(othersTyping);
-      } catch (err) {
-        handleSyncError('typing', err);
-      }
-    }, err => {
-      handleSyncError('typing', err);
-    });
+    return () => { off(typingRef); unsub(); };
+  }, [roomId, userId, handleSyncError]);
 
-    return () => {
-      off(typingRef);
-      unsubscribe();
-    };
-  }, [roomId, userId]);
+  // ========== Idle Polling ==========
 
-  // ========== Idle Detection ==========
   useEffect(() => {
-    const interval = setInterval(() => {
-      setIdlePeers(prev => {
-        const now = Date.now();
-        const idle = new Set();
-        Object.entries(peers).forEach(([uid, peer]) => {
-          if (uid !== userId && peer?.lastSeen) {
-            const timeSinceActivity = now - (peer.lastSeen || 0);
-            if (timeSinceActivity > IDLE_THRESHOLD) {
-              idle.add(uid);
-            }
-          }
-        });
-        return idle;
-      });
+    const id = setInterval(() => {
+      const now = Date.now();
+      setIdlePeers(new Set(
+        Object.entries(peers)
+          .filter(([uid, p]) => uid !== userId && p?.lastSeen && now - p.lastSeen > IDLE_THRESHOLD)
+          .map(([uid]) => uid)
+      ));
     }, 10000);
-
-    return () => clearInterval(interval);
+    return () => clearInterval(id);
   }, [peers, userId]);
 
-  // ========== Helper Functions ==========
-
-  const handleSyncError = useCallback((source, error) => {
-    const errorMsg = `${source}: ${error.message}`;
-    setSyncErrors(prev => [...prev.slice(-9), errorMsg]);
-    console.error(`[useRoom] Sync error in ${source}:`, error);
-  }, []);
-
-  const updateIdlePeers = useCallback((peersData) => {
-    const now = Date.now();
-    const idle = new Set();
-    Object.entries(peersData).forEach(([uid, peer]) => {
-      if (uid !== userId && peer?.lastSeen) {
-        if (now - peer.lastSeen > IDLE_THRESHOLD) {
-          idle.add(uid);
-        }
-      }
-    });
-    setIdlePeers(idle);
-  }, [userId]);
+  // ========== Typing ==========
 
   const setTyping = useCallback((isTyping) => {
     if (!roomId || !userId) return;
-
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-
-    try {
-      update(ref(db, `rooms/${roomId}/typing/${userId}`), {
-        isTyping,
-        name: userName,
-        timestamp: Date.now()
-      }).catch(err => {
-        handleSyncError('setTyping', err);
-      });
-
-      if (isTyping) {
-        typingTimeoutRef.current = setTimeout(() => {
-          setTyping(false);
-        }, TYPING_TIMEOUT);
-      }
-    } catch (err) {
-      handleSyncError('setTyping', err);
+    update(ref(db, `rooms/${roomId}/typing/${userId}`), {
+      isTyping, name: userName, timestamp: Date.now()
+    }).catch(err => handleSyncError('setTyping', err));
+    if (isTyping) {
+      typingTimeoutRef.current = setTimeout(() => setTyping(false), TYPING_TIMEOUT);
     }
   }, [roomId, userId, userName, handleSyncError]);
 
   // ========== AI Chat ==========
 
-  const sendAiMessage = useCallback(async (message) => {
-    if (!roomId || !message.trim()) return;
+  const buildSystemPrompt = useCallback(() => {
+    const collaborators = activePeers.length > 0
+      ? activePeers.map(p => p.name).join(', ')
+      : 'none';
 
-    if (aiAbortControllerRef.current) {
-      aiAbortControllerRef.current.abort();
-    }
+    return `You are Togcode — an elite senior software engineer. 
+Collaborative Room Context:
+- Active User: ${userName}
+- Team Online: ${collaborators}
+
+DIRECTIVES:
+- Provide senior-staff level technical advice.
+- Be concise, accurate, and direct.
+- Use clean Markdown and code blocks.`;
+  }, [userName, activePeers]);
+
+  const sendAiMessage = useCallback(async (message, modelOverride = null) => {
+    if (!roomId || !message.trim()) return;
+    
+    const targetModel = modelOverride || AI_CONFIG.model;
+
+    // Cancel any in-flight request
+    aiAbortControllerRef.current?.abort();
     aiAbortControllerRef.current = new AbortController();
 
-    const messageId = uuidv4();
     const chatRef = ref(db, `rooms/${roomId}/chat`);
 
+    // 1. Push user message
+    await push(chatRef, {
+      role: 'user',
+      content: message,
+      senderName: userName,
+      senderEmail: userEmail,
+      senderId: userId,
+      timestamp: Date.now(),
+    }).catch(err => { throw new Error(`Failed to send message: ${err.message}`); });
+
+    setAiThinking(true);
+    setStats(prev => ({ ...prev, messagesSent: prev.messagesSent + 1 }));
+
     try {
-      await push(chatRef, {
-        id: messageId,
-        role: 'user',
-        content: message,
-        senderName: userName,
-        senderEmail: userEmail,
-        senderId: userId,
-        timestamp: Date.now()
-      }).catch(err => {
-        throw new Error(`Failed to send message: ${err.message}`);
-      });
+      // 2. Build conversation context
+      const history = chatHistoryRef.current
+        .slice(-AI_CONTEXT_WINDOW)
+        .map(m => ({
+          role: m.role === 'assistant' ? 'assistant' : 'user',
+          content: m.role === 'user'
+            ? `[${m.senderName || 'User'}]: ${m.content}`
+            : m.content,
+        }));
 
-      setAiThinking(true);
-      setStats(prev => ({ ...prev, messagesSent: prev.messagesSent + 1 }));
-
-      const history = chatHistory.map(m => ({
-        role: m.role === 'assistant' ? 'assistant' : 'user',
-        content: m.role === 'user' ? `[${m.senderName}]: ${m.content}` : m.content
-      }));
-
+      // Append the current message
       history.push({ role: 'user', content: `[${userName}]: ${message}` });
 
-      const systemPrompt = `You are Togcode AI, an elite software hub assistant. You collaborate with engineers in real-time.
-      
-      CORE DIRECTIVES:
-      1. Provide accurate, senior-level technical advice.
-      2. Keep responses concise and actionable.
-      3. Active user: ${userName}
-      4. Collaborators: ${activePeers.length > 0 ? activePeers.map(p => p.name).join(', ') : 'None'}`;
-
+      // 3. Call Backend Proxy
       const response = await fetch('http://localhost:3001/api/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: AI_CONFIG.model,
+          model: targetModel,
           messages: [
-            { role: 'system', content: systemPrompt },
-            ...history.slice(-10)
+            { role: 'system', content: buildSystemPrompt() },
+            ...history
           ],
           temperature: AI_CONFIG.temperature,
           max_tokens: AI_CONFIG.max_tokens,
         }),
-        signal: aiAbortControllerRef.current.signal
+        signal: aiAbortControllerRef.current.signal,
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Backend Error ${response.status}: ${errorData.error || response.statusText}`);
+        const err = await response.json().catch(() => ({}));
+        throw new Error(`Intelligence Hub Backend ${response.status}: ${err.error || response.statusText}`);
       }
 
       const data = await response.json();
-      const aiResponse = data.choices?.[0]?.message?.content || 'I encountered an error processing your request.';
+      const aiResponse = data.choices?.[0]?.message?.content?.trim()
+        || '_Encountered a processing error. Please try again._';
 
+      // 4. Push AI response
       await push(chatRef, {
         role: 'assistant',
         content: aiResponse,
-        senderName: 'Togcode AI',
+        senderName: 'Togcode',
         senderId: 'ai',
-        timestamp: Date.now()
-      }).catch(err => {
-        throw new Error(`Failed to save AI response: ${err.message}`);
-      });
+        timestamp: Date.now(),
+        model: targetModel,
+      }).catch(err => { throw new Error(`Failed to save AI response: ${err.message}`); });
+
     } catch (err) {
       if (err.name === 'AbortError') return;
       handleSyncError('sendAiMessage', err);
+
+      // Push a visible error message into chat so users see what went wrong
+      await push(chatRef, {
+        role: 'assistant',
+        content: `_⚠️ Error: ${err.message}_`,
+        senderName: 'Togcode',
+        senderId: 'ai',
+        timestamp: Date.now(),
+        isError: true,
+      }).catch(() => { });
     } finally {
       setAiThinking(false);
       aiAbortControllerRef.current = null;
     }
-  }, [roomId, userName, userId, chatHistory, activePeers, handleSyncError, userEmail]);
+  }, [roomId, userName, userId, userEmail, buildSystemPrompt, handleSyncError]);
 
   // ========== Cleanup ==========
-  useEffect(() => {
-    return () => {
-      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-      if (aiAbortControllerRef.current) aiAbortControllerRef.current.abort();
-    };
+
+  useEffect(() => () => {
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    aiAbortControllerRef.current?.abort();
   }, []);
 
   return {
-    chatHistory,
-    peers,
-    aiThinking,
-    typingStatus,
-    connectionStatus,
-    syncErrors,
-    lastSync,
-    idlePeers,
-    stats,
-    activePeers,
-    setTyping,
-    sendAiMessage,
-    formatLastSeen,
-    clearSyncErrors: () => setSyncErrors([]),
+    chatHistory, peers, aiThinking, typingStatus,
+    connectionStatus, syncErrors, idlePeers, stats, activePeers,
+    setTyping, sendAiMessage,
+    formatLastSeen, clearSyncErrors: () => setSyncErrors([]),
   };
 }
 
 // ============================================================================
-// Utility Functions
+// Utilities
 // ============================================================================
 
 export function getUserColor(userId) {
@@ -360,17 +299,13 @@ export function getUserColor(userId) {
 }
 
 export function formatLastSeen(timestamp) {
-  const seconds = Math.floor((Date.now() - timestamp) / 1000);
-  if (seconds < 60) return 'just now';
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-  return `${Math.floor(seconds / 86400)}d ago`;
+  const s = Math.floor((Date.now() - timestamp) / 1000);
+  if (s < 60) return 'just now';
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+  return `${Math.floor(s / 86400)}d ago`;
 }
 
 export function getConnectionStatusColor(status) {
-  return {
-    'connected': '#10b981',
-    'connecting': '#f59e0b',
-    'offline': '#ef4444'
-  }[status] || '#9ca3af';
+  return { connected: '#10b981', connecting: '#f59e0b', offline: '#ef4444' }[status] ?? '#9ca3af';
 }
