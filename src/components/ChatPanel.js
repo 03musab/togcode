@@ -130,6 +130,8 @@ export default function ChatPanel({ chatHistory, aiThinking, onSend, peers, user
     return { total: chatHistory.length, ai: aiCount, user: userCount };
   }, [chatHistory]);
 
+  const peerCount = Object.keys(peers).length;
+
   return (
     <div className="chat-panel">
       <div className="chat-header">
@@ -141,6 +143,10 @@ export default function ChatPanel({ chatHistory, aiThinking, onSend, peers, user
               </svg>
             </span>
             <span className="chat-title">Intelligence Hub</span>
+            <span className="user-count-badge" title={`${peerCount} members in chat`}>
+              <span className="user-count-dot"></span>
+              {peerCount} Users
+            </span>
           </div>
           
           <div className="model-selector-container" ref={modelMenuRef}>
@@ -182,17 +188,20 @@ export default function ChatPanel({ chatHistory, aiThinking, onSend, peers, user
           </div>
         </div>
 
-        <div className="peers-list" title="Active collaborators">
-          {Object.entries(peers).map(([uid, peer]) => (
-            <div
-              key={uid}
-              className="peer-badge"
-              style={{ backgroundColor: peer.color }}
-              title={`${peer.name}${peer.email ? ` (${peer.email})` : ''}`}
-            >
-              {peer.name?.[0]?.toUpperCase() || '?'}
-            </div>
-          ))}
+        <div className="chat-header-right">
+          <div className="peers-list" title="Active collaborators">
+            {Object.entries(peers).map(([uid, peer]) => (
+              <div
+                key={uid}
+                className="peer-badge"
+                style={{ backgroundColor: peer.color }}
+                title={`${peer.name}${peer.email ? ` (${peer.email})` : ''}`}
+              >
+                <span className="peer-initial">{peer.name?.[0]?.toUpperCase() || '?'}</span>
+                <span className="peer-online-dot"></span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
