@@ -15,7 +15,6 @@ services:
   - type: web
     name: togcode-ai-frontend
     env: static
-    region: ohio
     rootDir: .
     buildCommand: npm install && CI=false npm run build
     staticPublishPath: ./build
