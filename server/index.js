@@ -10,12 +10,13 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// Intelligence Hub System Status
-app.get('/api/status', (req, res) => {
+// Intelligence Suite System Status
+app.get('/', (req, res) => {
   res.json({
     status: 'operational',
-    service: 'Intelligence Hub Backend',
-    version: 'Togcode 120B',
+    service: 'Intelligence Suite Backend',
+    version: 'Togcode AI 120B',
+    engine: 'Cerebras Llama3.1-8b',
     timestamp: new Date().toISOString()
   });
 });
@@ -26,12 +27,12 @@ app.post('/api/chat', async (req, res) => {
   
   // Model Tier Logic
   const modelTiers = {
-    'gpt-oss-120b': { cerebras: 'llama3.1-70b', delay: 0 },
-    'togcode-3-lite': { cerebras: 'llama3.1-8b', delay: 1000 },
-    'togcode-2-legacy': { cerebras: 'llama3.1-8b', delay: 2500 }
+    'togcode-ai-3-pro': { cerebras: 'llama3.1-70b', delay: 0 },
+    'togcode-ai-3-lite': { cerebras: 'llama3.1-8b', delay: 1000 },
+    'togcode-ai-2-legacy': { cerebras: 'llama3.1-8b', delay: 2500 }
   };
 
-  const selectedTier = modelTiers[model] || modelTiers['gpt-oss-120b'];
+  const selectedTier = modelTiers[model] || modelTiers['togcode-ai-3-pro'];
   const cerebrasModel = selectedTier.cerebras;
   const artificialDelay = selectedTier.delay;
 
@@ -78,5 +79,5 @@ app.post('/api/chat', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Intelligence Hub Backend running on http://localhost:${PORT}`);
+  console.log(`🚀 Intelligence Suite Backend running on http://localhost:${PORT}`);
 });

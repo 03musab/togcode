@@ -1,18 +1,16 @@
 // src/lib/firebase.js
-// Replace these with your actual Firebase config values
 import { initializeApp } from 'firebase/app';
 import { getDatabase } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCp6gO-G7RgQYbvhdfF0lhQfuB1YQivMfc",
-  authDomain: "studio-4251301193-d6f62.firebaseapp.com",
-  databaseURL: "https://studio-4251301193-d6f62-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  projectId: "studio-4251301193-d6f62",
-  storageBucket: "studio-4251301193-d6f62.firebasestorage.app",
-  messagingSenderId: "1049444633288",
-  appId: "1:1049444633288:web:72957515579548754068",
-  measurementId: "G-07Q19022QY"
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_DATABASE_URL,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);

@@ -1,8 +1,11 @@
 {
-  "name": "togcode-server",
+  "name": "togcode-ai-server",
   "version": "1.0.0",
-  "description": "Backend for Togcode Intelligence Hub",
+  "description": "Backend for Togcode AI Intelligence Suite",
   "main": "index.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js"
