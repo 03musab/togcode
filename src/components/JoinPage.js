@@ -308,7 +308,7 @@ export default function JoinPage({ user, onLogout, onJoin, initialMode = null })
           <span className="code">code</span>
           <span className="ai">AI</span>
         </div>
-              <p className="tc-tag">// intelligence suite command center</p>
+              <p className="tc-tag">{'// '}intelligence suite command center</p>
 
               <div className="tc-insights-grid" aria-label="Stats">
                 <div className="insight-card">

@@ -1,6 +1,6 @@
 // src/components/SettingsModal.js
 import React, { useState, useEffect, useRef } from 'react';
-import { getStorage, ref as sRef, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+
 import { useThemeContext } from '../hooks/useTheme';
 import { getUserColor } from '../hooks/useRoom';
 import './SettingsModal.css';

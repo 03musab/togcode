@@ -3,16 +3,15 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
   ref, onValue, set, push, update,
   serverTimestamp, off, onDisconnect,
-  query, orderByChild, limitToLast,
+  query, limitToLast,
 } from 'firebase/database';
 import { db } from '../lib/firebase';
-import { v4 as uuidv4 } from 'uuid';
+
 
 // ============================================================================
 // Configuration
 // ============================================================================
 
-const DEBOUNCE_DELAY = 300;
 const TYPING_TIMEOUT = 2000;
 const MAX_CHAT_HISTORY = 50;
 const IDLE_THRESHOLD = 60000;

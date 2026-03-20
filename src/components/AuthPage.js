@@ -137,7 +137,7 @@ export default function AuthPage({ onAuthSuccess }) {
 
           {error && (
             <div className="tc-error" role="alert" aria-live="assertive">
-              // {error}
+              {'// '} {error}
             </div>
           )}
 
