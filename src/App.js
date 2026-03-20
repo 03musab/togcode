@@ -224,7 +224,7 @@ export default function App() {
 
     prevPeersRef.current = peers;
     prevIdlePeersRef.current = new Set(idlePeers);
-  }, [peers, idlePeers, session, user?.uid, addToast]);
+  }, [peers, idlePeers, session, user, addToast]);
 
   // ─── Handlers ────────────────────────────────────────────────────────────
 
