@@ -29,7 +29,8 @@ const AI_CONFIG = {
 const AI_CONTEXT_WINDOW = 10;
 
 // ✅ Use env variable — no more hardcoded localhost
-const API_BASE_URL = process.env.REACT_APP_API_URL || '';
+const rawApiUrl = process.env.REACT_APP_API_URL || '';
+const API_BASE_URL = rawApiUrl.endsWith('/') ? rawApiUrl.slice(0, -1) : rawApiUrl;
 
 // ============================================================================
 // Security helpers
