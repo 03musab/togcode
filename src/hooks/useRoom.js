@@ -28,9 +28,10 @@ const AI_CONFIG = {
 
 const AI_CONTEXT_WINDOW = 10;
 
-// ✅ Use env variable — no more hardcoded localhost
+// ✅ Use env variable — supports both full URLs and bare hostnames (Render's fromService host)
 const rawApiUrl = process.env.REACT_APP_API_URL || '';
-const API_BASE_URL = rawApiUrl.endsWith('/') ? rawApiUrl.slice(0, -1) : rawApiUrl;
+const normalizedUrl = rawApiUrl && !rawApiUrl.startsWith('http') ? `https://${rawApiUrl}` : rawApiUrl;
+const API_BASE_URL = normalizedUrl.endsWith('/') ? normalizedUrl.slice(0, -1) : normalizedUrl;
 
 // ============================================================================
 // Security helpers

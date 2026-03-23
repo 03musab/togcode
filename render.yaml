@@ -7,8 +7,6 @@ services:
     buildCommand: npm install
     startCommand: npm start
     envVars:
-      - key: PORT
-        value: 3001
       - key: CEREBRAS_API_KEY
         sync: false
 
@@ -20,7 +18,10 @@ services:
     staticPublishPath: ./build
     envVars:
       - key: REACT_APP_API_URL
-        value: https://togcode-ai-backend.onrender.com
+        fromService:
+          name: togcode-ai-backend
+          type: web
+          property: host
       - key: REACT_APP_FIREBASE_API_KEY
         sync: false
       - key: REACT_APP_FIREBASE_AUTH_DOMAIN
