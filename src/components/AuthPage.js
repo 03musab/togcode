@@ -1,5 +1,5 @@
 // src/components/AuthPage.js
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import './AuthPage.css';
@@ -32,6 +32,78 @@ export default function AuthPage({ onAuthSuccess }) {
   const [isLogin,  setIsLogin]  = useState(true);
   const [error,    setError]    = useState(null);
   const [loading,  setLoading]  = useState(false);
+  const canvasRef = useRef(null);
+
+  // Background Interactive Canvas (Same as JoinPage for consistency)
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animId;
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const mouse = { x: null, y: null, radius: 150 };
+    const count = 40;
+    const particles = [];
+
+    class Particle {
+      constructor() {
+        this.x = this.baseX = Math.random() * width;
+        this.y = this.baseY = Math.random() * height;
+        this.size = Math.random() * 2 + 1;
+        this.density = Math.random() * 30 + 1;
+      }
+      draw() {
+        ctx.fillStyle = 'rgba(0,122,255,0.2)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      update() {
+        const dx = mouse.x - this.x;
+        const dy = mouse.y - this.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < mouse.radius) {
+          const force = (mouse.radius - dist) / mouse.radius;
+          this.x -= (dx / dist) * force * this.density;
+          this.y -= (dy / dist) * force * this.density;
+        } else {
+          if (this.x !== this.baseX) this.x -= (this.x - this.baseX) / 20;
+          if (this.y !== this.baseY) this.y -= (this.y - this.baseY) / 20;
+        }
+      }
+    }
+
+    const init = () => {
+      particles.length = 0;
+      for (let i = 0; i < count; i++) particles.push(new Particle());
+    };
+
+    const animate = () => {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      animId = requestAnimationFrame(animate);
+    };
+
+    init();
+    animate();
+
+    const onMove = (e) => { mouse.x = e.clientX; mouse.y = e.clientY; };
+    const onResize = () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      init();
+    };
+
+    window.addEventListener('mousemove', onMove, { passive: true });
+    window.addEventListener('resize', onResize, { passive: true });
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('resize', onResize);
+    };
+  }, []);
 
   const handleSubmit = async () => {
     setError(null);
@@ -73,6 +145,7 @@ export default function AuthPage({ onAuthSuccess }) {
 
   return (
     <div className="tc-root">
+      <canvas ref={canvasRef} className="tc-canvas" aria-hidden="true" />
       <div className="tc-noise" />
       <div className="tc-glow" />
       <div className="tc-glow2" />

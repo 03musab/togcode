@@ -19,7 +19,7 @@ TogCode leverages a modern, distributed architecture to provide sub-millisecond 
 ### Backend
 
 - **Node.js + Express**: High-efficiency AI proxy layer with tiered request management.
-- **Cerebras Intelligence**: Powering TogCode AI with **Llama 3.1 70B** for senior-level engineering advice.
+- **Cerebras Intelligence**: Powering TogCode AI with high-speed inference for senior-level engineering advice.
 
 ### Infrastructure
 

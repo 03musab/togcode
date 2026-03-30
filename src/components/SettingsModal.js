@@ -243,208 +243,210 @@ const SettingsModal = ({
 
   return (
     <div className="settings-page-wrapper">
-      <div className="settings-header">
-        <h2>Intelligence Suite Settings</h2>
-        <button className="close-btn" onClick={onClose} aria-label="Close settings">&times;</button>
-      </div>
+      <div className="settings-card glass-container">
+        <div className="settings-header">
+          <h2>Intelligence Suite Settings</h2>
+          <button className="close-btn" onClick={onClose} aria-label="Close settings">&times;</button>
+        </div>
 
-      <div className="settings-body">
+        <div className="settings-body">
 
-        {/* ── Profile ──────────────────────────────────────────────── */}
-        <section className="settings-section">
-          <div className="section-heading">
-            <Icons.User /> User Profile
-          </div>
-          <div className="profile-edit-container">
-            <div className="user-profile-info">
-              <div className="avatar-upload-wrapper">
-                <div className="user-avatar-large" style={{ backgroundColor: editedColor }}>
-                  {editedPhotoURL ? (
-                    <img
-                      src={editedPhotoURL}
-                      alt="Avatar"
-                      className="user-avatar-img"
-                      referrerPolicy="no-referrer"
-                      onError={e => { e.currentTarget.style.display = 'none'; }}
-                    />
-                  ) : (
-                    (editedName?.[0] || user?.email?.[0])?.toUpperCase()
-                  )}
-                  {isUploading && (
-                    <div className="avatar-loading-overlay">
-                      <div className="upload-progress-bar-wrap">
-                        <div className="upload-progress-bar" style={{ width: `${uploadProgress}%` }} />
+          {/* ── Profile ──────────────────────────────────────────────── */}
+          <section className="settings-section">
+            <div className="section-heading">
+              <Icons.User /> User Profile
+            </div>
+            <div className="profile-edit-container">
+              <div className="user-profile-info">
+                <div className="avatar-upload-wrapper">
+                  <div className="user-avatar-large" style={{ backgroundColor: editedColor }}>
+                    {editedPhotoURL ? (
+                      <img
+                        src={editedPhotoURL}
+                        alt="Avatar"
+                        className="user-avatar-img"
+                        referrerPolicy="no-referrer"
+                        onError={e => { e.currentTarget.style.display = 'none'; }}
+                      />
+                    ) : (
+                      (editedName?.[0] || user?.email?.[0])?.toUpperCase()
+                    )}
+                    {isUploading && (
+                      <div className="avatar-loading-overlay">
+                        <div className="upload-progress-bar-wrap">
+                          <div className="upload-progress-bar" style={{ width: `${uploadProgress}%` }} />
+                        </div>
+                        <div className="upload-progress-pct">{uploadProgress}%</div>
                       </div>
-                      <div className="upload-progress-pct">{uploadProgress}%</div>
-                    </div>
+                    )}
+                  </div>
+                  <label className="avatar-edit-label" title="Upload photo">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      onChange={handleFileChange}
+                      hidden
+                      disabled={isUploading}
+                    />
+                    <Icons.Camera />
+                  </label>
+                </div>
+
+                <div className="user-details">
+                  <input
+                    className="settings-input"
+                    value={editedName}
+                    onChange={e => setEditedName(e.target.value)}
+                    placeholder="Display Name"
+                    maxLength={64}
+                  />
+                  <p className="user-email-display">{user?.email}</p>
+                  {uploadError && (
+                    <p style={{ fontSize:'0.75rem', color:'var(--clr-red)', margin:0 }}>
+                      {uploadError}
+                    </p>
                   )}
                 </div>
-                <label className="avatar-edit-label" title="Upload photo">
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp,image/gif"
-                    onChange={handleFileChange}
-                    hidden
-                    disabled={isUploading}
-                  />
-                  <Icons.Camera />
-                </label>
               </div>
 
-              <div className="user-details">
-                <input
-                  className="settings-input"
-                  value={editedName}
-                  onChange={e => setEditedName(e.target.value)}
-                  placeholder="Display Name"
-                  maxLength={64}
-                />
-                <p className="user-email-display">{user?.email}</p>
-                {uploadError && (
-                  <p style={{ fontSize:'0.75rem', color:'var(--clr-red)', margin:0 }}>
-                    {uploadError}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="color-picker-section">
-              <label className="color-picker-label">Choose your Tech Persona</label>
-              <div className="avatar-picker-grid">
-                {PRESET_AVATARS.map(url => (
-                  <button
-                    key={url}
-                    className={`avatar-preset-btn ${editedPhotoURL === url ? 'active' : ''}`}
-                    onClick={() => setEditedPhotoURL(url)}
-                    aria-label="Select tech persona"
-                  >
-                    <img src={url} alt="Preset Persona" referrerPolicy="no-referrer" />
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── Suite Info ─────────────────────────────────────────────── */}
-        <section className="settings-section">
-          <div className="section-heading">
-            <Icons.Suite /> Suite Information
-          </div>
-          <div className="suite-info-grid">
-            <div className="info-item">
-              <span className="info-label">Current Room</span>
-              <span className="info-value">{session?.roomId}</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">Role</span>
-              <span className="info-value">{session?.isHost ? 'Host / Owner' : 'Collaborator'}</span>
-            </div>
-          </div>
-        </section>
-
-        {/* ── Preferences ──────────────────────────────────────────── */}
-        <section className="settings-section">
-          <div className="section-heading">
-            <Icons.Sliders /> Preferences
-          </div>
-
-          <div className="setting-item">
-            <div className="setting-info">
-              <span className="setting-label">Theme</span>
-              <span className="setting-desc">Switch between dark and light theme</span>
-            </div>
-            <button
-              className="theme-preference-btn"
-              onClick={toggleTheme}
-              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
-            >
-              {theme === 'dark' ? <><Icons.Sun /> Light</> : <><Icons.Moon /> Dark</>}
-            </button>
-          </div>
-
-          <div className="setting-item">
-            <div className="setting-info">
-              <span className="setting-label">Notification Sounds</span>
-              <span className="setting-desc">Silence sound effects for presence events</span>
-            </div>
-            <button
-              className={`notification-toggle-btn ${notificationsMuted ? 'muted' : 'enabled'}`}
-              onClick={() => setNotificationsMuted(!notificationsMuted)}
-            >
-              {notificationsMuted ? <><Icons.BellOff /> Muted</> : <><Icons.Bell /> Enabled</>}
-            </button>
-          </div>
-        </section>
-
-        {/* ── Security ─────────────────────────────────────────────── */}
-        <section className="settings-section">
-          <div className="section-heading">
-            <Icons.Lock /> Security
-          </div>
-          <div className="setting-item destructive">
-            <div className="setting-info">
-              <span className="setting-label">Logout</span>
-              <span className="setting-desc">Sign out and clear session</span>
-            </div>
-            <button className="btn-danger-outline" onClick={onLogout}>
-              <Icons.Logout /> Logout
-            </button>
-          </div>
-          <div className="setting-item destructive" style={{ marginTop: '10px' }}>
-            <div className="setting-info">
-              <span className="setting-label">{session?.isHost ? 'Delete Room' : 'Leave Room'}</span>
-              <span className="setting-desc">{session?.isHost ? 'Permanently delete this room and chat history' : 'Leave this room and return to join screen'}</span>
-            </div>
-            {session?.isHost ? (
-              showDeleteConfirm ? (
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button className="btn-danger-solid" type="button" onClick={() => onLeaveRoom(true)}>Confirm Delete</button>
-                  <button className="btn-secondary" type="button" onClick={() => setShowDeleteConfirm(false)}>Cancel</button>
+              <div className="color-picker-section">
+                <label className="color-picker-label">Choose your Tech Persona</label>
+                <div className="avatar-picker-grid">
+                  {PRESET_AVATARS.map(url => (
+                    <button
+                      key={url}
+                      className={`avatar-preset-btn ${editedPhotoURL === url ? 'active' : ''}`}
+                      onClick={() => setEditedPhotoURL(url)}
+                      aria-label="Select tech persona"
+                    >
+                      <img src={url} alt="Preset Persona" referrerPolicy="no-referrer" />
+                    </button>
+                  ))}
                 </div>
-              ) : (
-                <button className="btn-danger-outline" type="button" onClick={() => setShowDeleteConfirm(true)}>
-                  <Icons.Trash /> Delete Room
-                </button>
-              )
-            ) : (
-              <button className="btn-danger-outline" type="button" onClick={() => onLeaveRoom(false)}>
-                <Icons.Logout /> Leave Room
+              </div>
+            </div>
+          </section>
+
+          {/* ── Suite Info ─────────────────────────────────────────────── */}
+          <section className="settings-section">
+            <div className="section-heading">
+              <Icons.Suite /> Suite Information
+            </div>
+            <div className="suite-info-grid">
+              <div className="info-item">
+                <span className="info-label">Current Room</span>
+                <span className="info-value">{session?.roomId}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Role</span>
+                <span className="info-value">{session?.isHost ? 'Host / Owner' : 'Collaborator'}</span>
+              </div>
+            </div>
+          </section>
+
+          {/* ── Preferences ──────────────────────────────────────────── */}
+          <section className="settings-section">
+            <div className="section-heading">
+              <Icons.Sliders /> Preferences
+            </div>
+
+            <div className="setting-item">
+              <div className="setting-info">
+                <span className="setting-label">Theme</span>
+                <span className="setting-desc">Switch between dark and light theme</span>
+              </div>
+              <button
+                className="theme-preference-btn"
+                onClick={toggleTheme}
+                title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+              >
+                {theme === 'dark' ? <><Icons.Sun /> Light</> : <><Icons.Moon /> Dark</>}
               </button>
-            )}
-          </div>
-        </section>
+            </div>
 
-        {/* ── About ────────────────────────────────────────────────── */}
-        <section className="settings-section about-section">
-          <div className="section-heading">
-            <Icons.Info /> About
-          </div>
-          <div className="settings-footer">
-            <p><strong>Togcode AI Intelligence Suite</strong> v1.0.5</p>
-            <p>Real-time collaborative coding with AI-powered assistance</p>
-            <p className="about-features">
-              Live Collaboration · AI Intelligence · Real-time Sync
-            </p>
-          </div>
-        </section>
+            <div className="setting-item">
+              <div className="setting-info">
+                <span className="setting-label">Notification Sounds</span>
+                <span className="setting-desc">Silence sound effects for presence events</span>
+              </div>
+              <button
+                className={`notification-toggle-btn ${notificationsMuted ? 'muted' : 'enabled'}`}
+                onClick={() => setNotificationsMuted(!notificationsMuted)}
+              >
+                {notificationsMuted ? <><Icons.BellOff /> Muted</> : <><Icons.Bell /> Enabled</>}
+              </button>
+            </div>
+          </section>
 
-      </div>
+          {/* ── Security ─────────────────────────────────────────────── */}
+          <section className="settings-section">
+            <div className="section-heading">
+              <Icons.Lock /> Security
+            </div>
+            <div className="setting-item destructive">
+              <div className="setting-info">
+                <span className="setting-label">Logout</span>
+                <span className="setting-desc">Sign out and clear session</span>
+              </div>
+              <button className="btn-danger-outline" onClick={onLogout}>
+                <Icons.Logout /> Logout
+              </button>
+            </div>
+            <div className="setting-item destructive" style={{ marginTop: '10px' }}>
+              <div className="setting-info">
+                <span className="setting-label">{session?.isHost ? 'Delete Room' : 'Leave Room'}</span>
+                <span className="setting-desc">{session?.isHost ? 'Permanently delete this room and chat history' : 'Leave this room and return to join screen'}</span>
+              </div>
+              {session?.isHost ? (
+                showDeleteConfirm ? (
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button className="btn-danger-solid" type="button" onClick={() => onLeaveRoom(true)}>Confirm Delete</button>
+                    <button className="btn-secondary" type="button" onClick={() => setShowDeleteConfirm(false)}>Cancel</button>
+                  </div>
+                ) : (
+                  <button className="btn-danger-outline" type="button" onClick={() => setShowDeleteConfirm(true)}>
+                    <Icons.Trash /> Delete Room
+                  </button>
+                )
+              ) : (
+                <button className="btn-danger-outline" type="button" onClick={() => onLeaveRoom(false)}>
+                  <Icons.Logout /> Leave Room
+                </button>
+              )}
+            </div>
+          </section>
 
-      <div className="settings-footer">
-        <p className="settings-credits">© 2026 Togcode AI · Built with care</p>
-        <div className="footer-actions">
-          <button className="btn-secondary" onClick={onClose}>Cancel</button>
-          <button
-            className="btn-primary"
-            onClick={handleSave}
-            disabled={isUploading}
-          >
-            {isUploading
-              ? <><div className="spinner" style={{width:12,height:12}} /> Uploading…</>
-              : <><Icons.Save /> Save Changes</>
-            }
-          </button>
+          {/* ── About ────────────────────────────────────────────────── */}
+          <section className="settings-section about-section">
+            <div className="section-heading">
+              <Icons.Info /> About
+            </div>
+            <div className="about-details">
+              <p><strong>Togcode AI Intelligence Suite</strong> v1.0.5</p>
+              <p>Real-time collaborative coding with AI-powered assistance</p>
+              <p className="about-features">
+                Live Collaboration · AI Intelligence · Real-time Sync
+              </p>
+            </div>
+          </section>
+
+        </div>
+
+        <div className="settings-footer">
+          <p className="settings-credits">© 2026 Togcode AI · Built with care</p>
+          <div className="footer-actions">
+            <button className="btn-secondary" onClick={onClose}>Cancel</button>
+            <button
+              className="btn-primary"
+              onClick={handleSave}
+              disabled={isUploading}
+            >
+              {isUploading
+                ? <><div className="spinner" style={{width:12,height:12}} /> Uploading…</>
+                : <><Icons.Save /> Save Changes</>
+              }
+            </button>
+          </div>
         </div>
       </div>
     </div>

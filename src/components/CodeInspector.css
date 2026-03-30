@@ -1,0 +1,307 @@
+/* src/components/CodeInspector.css */
+:root {
+  --inspector-bg: rgba(9, 10, 15, 0.95);
+  --inspector-border: rgba(255, 255, 255, 0.08);
+  --code-header-bg: rgba(20, 22, 30, 0.6);
+  --accent: #45B7D1; /* Togcode primary blue */
+  --accent-glow: rgba(69, 183, 209, 0.15);
+  --text-1: #FFFFFF;
+  --text-2: #A0AEC0;
+  --text-3: #718096;
+  --btn-glow: 0 0 15px rgba(69, 183, 209, 0.3);
+}
+
+.code-inspector {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 350px;
+  background: var(--inspector-bg);
+  backdrop-filter: blur(25px);
+  border-left: 1px solid var(--inspector-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* ─── Header ───────────────────────────────────────────────────────────── */
+.inspector-header {
+  padding: 24px;
+  border-bottom: 1px solid var(--inspector-border);
+}
+
+.inspector-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.inspector-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 800;
+  color: var(--accent);
+  opacity: 0.9;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  display: flex;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+/* ─── Segmented Control ──────────────────────────────────────────────────── */
+.segmented-control {
+  display: flex;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.segment-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 10px 4px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-2);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.segment-btn.active {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* ─── Content ───────────────────────────────────────────────────────────── */
+.inspector-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ─── Schema Pills ────────────────────────────────────────────────────────── */
+.schema-pill-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.schema-intent-pill {
+  font-size: 0.6rem;
+  padding: 4px 10px;
+  background: rgba(69, 183, 209, 0.15);
+  color: var(--accent);
+  border-radius: 100px;
+  font-weight: 800;
+  text-transform: uppercase;
+  border: 1px solid rgba(69, 183, 209, 0.2);
+}
+
+.schema-meta {
+  font-size: 0.65rem;
+  color: var(--text-3);
+  font-weight: 500;
+}
+
+.schema-node-id {
+  font-size: 0.6rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-3);
+  margin-left: auto;
+  opacity: 0.5;
+}
+
+/* ─── Code Block ─────────────────────────────────────────────────────────── */
+.code-block-wrapper {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border: 1px solid var(--inspector-border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.code-header {
+  background: var(--code-header-bg);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--inspector-border);
+}
+
+.code-lang-label {
+  font-size: 0.6rem;
+  color: var(--text-2);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+}
+
+.code-editor-container {
+  padding: 0;
+  position: relative;
+  min-height: 200px;
+}
+
+.code-display {
+  margin: 0;
+  padding: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: #E2E8F0;
+  overflow-x: auto;
+  background: transparent;
+}
+
+.code-display code {
+  color: inherit;
+  font-family: inherit;
+}
+
+/* ─── Copy Button ────────────────────────────────────────────────────────── */
+.copy-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-3);
+  font-size: 0.65rem;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.copy-btn:hover {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+  box-shadow: var(--btn-glow);
+}
+
+.copy-btn.copy-btn-ok {
+  background: rgba(52, 211, 153, 0.15);
+  border-color: rgba(52, 211, 153, 0.4);
+  color: #34D399;
+  pointer-events: none;
+}
+
+/* ─── Footer ───────────────────────────────────────────────────────────── */
+.inspector-footer {
+  margin-top: auto;
+  padding-top: 24px;
+  font-size: 0.6rem;
+  color: var(--text-3);
+  text-align: center;
+  opacity: 0.6;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@keyframes inspectorSlideUp {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .code-inspector {
+    left: 0;
+    width: auto;
+    border-left: none;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.45);
+    animation: inspectorSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .inspector-header,
+  .inspector-content {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .inspector-header {
+    padding: 16px;
+  }
+
+  .segmented-control {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .segment-btn {
+    white-space: normal;
+    font-size: 0.72rem;
+    padding: 10px 12px;
+  }
+
+  .inspector-content {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .schema-pill-row {
+    align-items: flex-start;
+  }
+
+  .schema-node-id {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .code-header {
+    padding: 10px 12px;
+    gap: 10px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .code-display {
+    padding: 14px;
+    font-size: 0.7rem;
+  }
+
+  .copy-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

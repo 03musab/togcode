@@ -1,0 +1,393 @@
+/* src/components/NodeElement.css */
+.node-element {
+  position: absolute;
+  width: 250px; /* Widened to accommodate 24px padding */
+  padding: var(--glass-padding);
+  cursor: grab;
+  user-select: none;
+  z-index: 10;
+  border: 1px solid var(--border-md);
+  transition: box-shadow 0.2s, transform 0.1s;
+}
+
+.node-element:hover {
+  border-color: var(--accent);
+  box-shadow: var(--btn-glow);
+}
+
+.node-element.dragging {
+  cursor: grabbing;
+  transform: scale(1.02);
+  z-index: 1000;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  border-color: var(--accent);
+}
+
+.node-element.ghost-mode {
+  opacity: 0.4;
+  pointer-events: none;
+  filter: blur(0.5px);
+  border-style: dashed;
+  box-shadow: none;
+  transition: all 0.15s cubic-bezier(0.2, 0, 0.4, 1);
+}
+
+.node-element.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 30px var(--accent-glow);
+  background: rgba(0, 242, 255, 0.05); /* Slight accent tint */
+}
+
+.node-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--glass-gap);
+  border-bottom: 1px solid var(--border-sm);
+  padding-bottom: 12px;
+}
+
+.node-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.node-delete-btn {
+  background: var(--glass-md);
+  border: 1px solid var(--border-sm);
+  color: var(--text-4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.node-delete-btn:hover {
+  background: var(--clr-red-dim);
+  color: var(--clr-red);
+  box-shadow: var(--btn-glow);
+}
+
+.node-intent {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent);
+}
+
+.node-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-4);
+}
+
+.node-status-dot[data-status="active"] { background: var(--clr-green); box-shadow: 0 0 8px var(--clr-green); }
+.node-status-dot[data-status="error"]  { background: var(--clr-red); box-shadow: 0 0 8px var(--clr-red); }
+.node-status-dot[data-status="pending"]{ background: var(--clr-orange); box-shadow: 0 0 8px var(--clr-orange); }
+
+.node-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--glass-gap);
+  font-size: 0.72rem;
+  color: var(--text-2);
+}
+
+/* ─── Intent Dropdown ─────────────────────────────────────────────────────── */
+.node-intent-select {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--glass-sm);
+  border: 1px solid var(--border-sm);
+  outline: none;
+  cursor: pointer;
+  padding: 0 12px;
+  height: var(--btn-height-std);
+  border-radius: 8px;
+  appearance: none;
+  letter-spacing: 0.5px;
+}
+.node-intent-select:focus {
+  background: var(--glass-md);
+  outline: 1px solid var(--border-md);
+}
+.node-intent-select option {
+  background: var(--surface-2);
+  color: var(--text-1);
+}
+
+/* ─── IO Section ──────────────────────────────────────────────────────────── */
+.node-io-section {
+  background: rgba(0,0,0,0.2);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.node-io-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.io-label {
+  font-weight: 800;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--text-4);
+  letter-spacing: 0.5px;
+}
+
+.io-empty {
+  font-size: 0.65rem;
+  color: var(--text-4);
+  font-style: italic;
+  padding: 2px 0;
+}
+
+.io-add-btn {
+  background: var(--glass-md);
+  border: 1px solid var(--border-sm);
+  color: var(--text-3);
+  cursor: pointer;
+  border-radius: 4px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+  transition: all 0.15s;
+}
+.io-add-btn:hover {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ─── IO Field Row ─────────────────────────────────────────────────────────── */
+.io-field-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 4px;
+}
+
+.io-field-key {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70px;
+}
+
+.io-field-input {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border-sm);
+  border-radius: 4px;
+  color: var(--text-1);
+  padding: 2px 6px;
+  height: 22px;
+  width: 100%;
+  outline: none;
+  cursor: text;
+  transition: border-color 0.15s;
+}
+.io-field-input:focus {
+  border-color: var(--accent);
+  background: rgba(0, 242, 255, 0.04);
+}
+
+.io-remove-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-4);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0 2px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  width: 18px;
+  transition: all 0.15s;
+}
+.io-remove-btn:hover {
+  background: rgba(255, 69, 58, 0.15);
+  color: var(--clr-red);
+}
+
+/* ─── Description Textarea ────────────────────────────────────────────────── */
+.node-description-wrap {
+  padding: 0 2px 2px;
+}
+
+.node-description-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  line-height: 1.5;
+  color: var(--text-2);
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-sm);
+  border-radius: 8px;
+  padding: 7px 10px;
+  outline: none;
+  resize: vertical;
+  min-height: 42px;
+  cursor: text;
+  transition: border-color 0.15s, background 0.15s;
+  /* Prevent the textarea from triggering node drag */
+  pointer-events: all;
+}
+
+.node-description-input::placeholder {
+  color: var(--text-4);
+  font-style: italic;
+}
+
+.node-description-input:focus {
+  border-color: var(--accent);
+  background: rgba(0, 242, 255, 0.04);
+  box-shadow: inset 0 0 0 1px rgba(0, 242, 255, 0.1);
+}
+
+.node-footer {
+  margin-top: 10px;
+  font-size: 0.6rem;
+  color: var(--text-4);
+  text-align: right;
+}
+
+/* ─── Semantic Suggestions ─────────────────────────────────────────────────── */
+.semantic-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 4px;
+}
+
+.suggestions-label {
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-4);
+}
+
+.suggestion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.suggestion-chip {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.58rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  height: auto;
+  border-radius: 4px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(0, 242, 255, 0.25);
+  color: var(--accent);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.suggestion-chip:hover {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: var(--btn-glow);
+}
+
+.io-type-icon {
+  margin-right: 3px;
+}
+
+@media (max-width: 768px) {
+  .node-element {
+    width: 220px;
+    padding: 18px;
+  }
+
+  .node-io-section {
+    padding: 14px;
+  }
+
+  .node-footer {
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .node-element {
+    width: 190px;
+    padding: 14px;
+  }
+
+  .node-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .node-header-left {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .node-intent-select {
+    width: 100%;
+  }
+
+  .node-delete-btn {
+    width: 32px;
+    height: 32px;
+    align-self: flex-end;
+  }
+
+  .io-field-row {
+    grid-template-columns: 1fr auto;
+    gap: 6px;
+  }
+
+  .io-field-key {
+    grid-column: 1 / -1;
+    max-width: none;
+  }
+
+  .node-description-input {
+    min-height: 56px;
+    font-size: 0.68rem;
+  }
+
+  .suggestion-chip {
+    white-space: normal;
+  }
+}

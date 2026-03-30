@@ -4,6 +4,9 @@ import { v4 as uuidv4 } from 'uuid';
 import JoinPage from './components/JoinPage';
 import AuthPage from './components/AuthPage';
 import ChatPanel from './components/ChatPanel';
+import BlueprintCanvas from './components/BlueprintCanvas';
+import WorkflowCanvas from './components/WorkflowCanvas';
+import CodeInspector from './components/CodeInspector';
 import SettingsModal from './components/SettingsModal';
 import { useRoom } from './hooks/useRoom';
 import { useThemeContext } from './hooks/useTheme';
@@ -123,6 +126,11 @@ const Icons = {
       <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
     </svg>
   ),
+  AlertCircle: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+  ),
 };
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -137,8 +145,10 @@ export default function App() {
   );
   const [copied, setCopied] = useState(false);
   const [currentView, setCurrentView] = useState('chat');
+  const [activeNode, setActiveNode] = useState(null);
   const [isDeletingRoom, setIsDeletingRoom] = useState(false);
   const [joinPageMode, setJoinPageMode] = useState(null);
+  const [canvasMode, setCanvasMode] = useState('blueprint'); // 'blueprint' or 'workflow'
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (authUser) => {
@@ -152,17 +162,12 @@ export default function App() {
     localStorage.setItem('tg_notifications_muted', notificationsMuted);
   }, [notificationsMuted]);
 
-  const {
-    chatHistory, peers, aiThinking, typingStatus, idlePeers,
-    sendAiMessage, setTyping,
-  } = useRoom(
-    session?.roomId,
-    user?.uid,
-    session?.userName || user?.email?.split('@')[0],
-    user?.email,
-    session?.userColor,
-    session?.userPhotoURL
-  );
+  // Handle canvas mode transitions
+  useEffect(() => {
+    if (canvasMode === 'workflow') {
+      setActiveNode(null);
+    }
+  }, [canvasMode]);
 
   // ─── Toast system ───────────────────────────────────────────────────────
   const [toasts, setToasts] = useState([]);
@@ -193,6 +198,24 @@ export default function App() {
     setToasts(prev => [...prev, { id, message, type }].slice(-4));
     setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4500);
   }, [playNotificationSound]);
+
+  const {
+    chatHistory, peers, aiThinking, typingStatus, idlePeers,
+    sendAiMessage, setTyping, nodes, updateNode, deleteNode,
+    connections, updateConnection, deleteConnection,
+    workflowNodes, updateWorkflowNode, deleteWorkflowNode,
+    workflowConnections, updateWorkflowConnection, deleteWorkflowConnection,
+    clearWorkflow,
+    syncStats,
+  } = useRoom(
+    session?.roomId,
+    user?.uid,
+    session?.userName || user?.email?.split('@')[0],
+    user?.email,
+    session?.userColor,
+    session?.userPhotoURL,
+    addToast
+  );
 
   useEffect(() => {
     if (!user || !session || Object.keys(peers).length === 0) return;
@@ -297,12 +320,13 @@ export default function App() {
   };
 
   // ─── Toast icon map ───────────────────────────────────────────────────────
-  const toastIconClass = { join: 'join', leave: 'leave', idle: 'idle', active: 'active' };
+  const toastIconClass = { join: 'join', leave: 'leave', idle: 'idle', active: 'active', error: 'error' };
   const toastIconNode = {
     join: <Icons.UserPlus />,
     leave: <Icons.UserMinus />,
     idle: <Icons.Clock />,
     active: <Icons.Zap />,
+    error: <Icons.AlertCircle />,
   };
 
   // ─── View renderer ────────────────────────────────────────────────────────
@@ -310,18 +334,56 @@ export default function App() {
     switch (currentView) {
       case 'chat':
         return (
-          <ChatPanel
-            chatHistory={chatHistory}
-            aiThinking={aiThinking}
-            onSend={sendAiMessage}
-            peers={peers}
-            userId={user?.uid}
-            typingStatus={typingStatus}
-            onTyping={setTyping}
-            idlePeers={idlePeers}
-            isHost={session?.isHost}
-            onLeaveRoom={handleLeaveRoom}
-          />
+          <>
+            <ChatPanel
+              chatHistory={chatHistory}
+              aiThinking={aiThinking}
+              onSend={sendAiMessage}
+              peers={peers}
+              userId={user?.uid}
+              typingStatus={typingStatus}
+              onTyping={setTyping}
+              idlePeers={idlePeers}
+              isHost={session?.isHost}
+              onLeaveRoom={handleLeaveRoom}
+            />
+            {canvasMode === 'blueprint' ? (
+              <BlueprintCanvas
+                nodes={nodes}
+                updateNode={updateNode}
+                deleteNode={deleteNode}
+                connections={connections}
+                updateConnection={updateConnection}
+                deleteConnection={deleteConnection}
+                activeNode={activeNode}
+                setActiveNode={setActiveNode}
+                userId={user?.uid}
+                canvasMode={canvasMode}
+                setCanvasMode={setCanvasMode}
+              />
+            ) : (
+              <WorkflowCanvas
+                userId={user?.uid}
+                canvasMode={canvasMode}
+                setCanvasMode={setCanvasMode}
+                nodes={workflowNodes}
+                connections={workflowConnections}
+                updateNode={updateWorkflowNode}
+                deleteNode={deleteWorkflowNode}
+                updateConnection={updateWorkflowConnection}
+                deleteConnection={deleteWorkflowConnection}
+                clearWorkflow={clearWorkflow}
+              />
+            )}
+            {activeNode && nodes[activeNode] && canvasMode === 'blueprint' && (
+              <CodeInspector
+                activeNode={activeNode}
+                nodes={nodes}
+                connections={connections}
+                onClose={() => setActiveNode(null)}
+              />
+            )}
+          </>
         );
       case 'settings':
         return (
@@ -397,19 +459,20 @@ export default function App() {
 
   // ─── Main App ─────────────────────────────────────────────────────────────
 
+  const isSuiteView = currentView === 'chat';
+
   return (
     <div className="app">
       <header className="app-header">
         {/* Left */}
         <div className="header-left">
-          <div className="header-logo" onClick={() => setCurrentView('chat')} title="Return to Intelligence Suite">
+          <div className={`header-logo ${isSuiteView ? 'active-view' : ''}`} onClick={() => setCurrentView('chat')} title="Return to Intelligence Suite">
             <span className="logo-tog">tog</span>
             <span className="logo-code">code</span>
             <span className="logo-ai">AI</span>
           </div>
         </div>
 
-        {/* Center */}
         <div className="header-center">
           <div className="room-info-pill">
             <span className="room-label">Suite AI</span>
@@ -423,6 +486,13 @@ export default function App() {
             </code>
             {copied && <span className="copy-notif">Copied!</span>}
           </div>
+
+          {syncStats && syncStats.p95 > 0 && (
+            <div className={`latency-pill ${syncStats.p95 > 500 ? 'high' : syncStats.p95 > 250 ? 'med' : 'low'}`} title={`p95 Sync Latency: ${syncStats.p95}ms`}>
+              <Icons.Activity />
+              <span>{syncStats.p95}ms</span>
+            </div>
+          )}
         </div>
 
         {/* Right */}
@@ -461,31 +531,41 @@ export default function App() {
             </button>
           </div>
 
-          <div
-            className="user-avatar-circle"
-            style={{ backgroundColor: peers[user.uid]?.color || '#8b7b9f' }}
-            title={user.email}
-          >
-            {session.userPhotoURL ? (
-              <img
-                src={session.userPhotoURL}
-                alt=""
-                className="user-avatar-img"
-                referrerPolicy="no-referrer"
-                onError={e => { e.currentTarget.style.display = 'none'; }}
-              />
-            ) : (
-              (session.userName?.[0] || user.email?.[0])?.toUpperCase()
-            )}
+          <div className="header-user-profile">
+            <div className="user-info-text">
+              <span className="user-display-name">{session.userName || user.email?.split('@')[0]}</span>
+              <span className="user-role-badge">{session.isHost ? 'Host' : 'Collaborator'}</span>
+            </div>
+            <div
+              className="user-avatar-circle"
+              style={{ backgroundColor: peers[user.uid]?.color || '#8b7b9f' }}
+              title={user.email}
+            >
+              {session.userPhotoURL ? (
+                <img
+                  src={session.userPhotoURL}
+                  alt=""
+                  className="user-avatar-img"
+                  referrerPolicy="no-referrer"
+                  onError={e => { e.currentTarget.style.display = 'none'; }}
+                />
+              ) : (
+                (session.userName?.[0] || user.email?.[0])?.toUpperCase()
+              )}
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="app-main">
-        <div className="sidebar">
+      <main className={`app-main ${activeNode ? 'inspector-open' : ''} ${isSuiteView ? 'suite-view' : ''}`}>
+        <div className="sidebar" style={{ display: currentView === 'chat' ? 'none' : 'flex' }}>
           <div className="sidebar-group">
             <span className="sidebar-label">Intelligence</span>
-            <button className={`sidebar-item ${currentView === 'chat' ? 'active' : ''}`} onClick={() => setCurrentView('chat')}>
+            <button
+              className={`sidebar-item suite-entry ${currentView === 'chat' ? 'active' : ''}`}
+              onClick={() => setCurrentView('chat')}
+              aria-current={currentView === 'chat' ? 'page' : undefined}
+            >
               <Icons.Chat /> Intelligence Suite
             </button>
           </div>
@@ -521,9 +601,7 @@ export default function App() {
           </div>
         </div>
 
-        <div className="main-content-flow">
-          {renderContent()}
-        </div>
+        {renderContent()}
       </main>
 
       {/* Toasts */}

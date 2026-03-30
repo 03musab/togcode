@@ -1,0 +1,347 @@
+/* src/components/BlueprintCanvas.css */
+.blueprint-canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(#1A202C 1px, transparent 1px);
+  background-size: 30px 30px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+  user-select: none;
+}
+
+.canvas-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.canvas-content > * {
+  pointer-events: auto;
+}
+
+.workspace-overlay {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.workspace-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--glass-sm);
+  backdrop-filter: blur(12px);
+  padding: 3px;
+  border-radius: 8px;
+  border: 1px solid var(--border-sm);
+  pointer-events: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.workspace-tab {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.workspace-tab.active {
+  background: var(--accent);
+  color: #000;
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+.workspace-tab:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-1);
+}
+
+.fab-actions {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  gap: 16px;
+  z-index: 100;
+}
+
+.fab-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.plus-btn {
+  background: var(--accent);
+  color: #000;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.plus-btn:hover {
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 0 30px var(--accent);
+}
+
+.delete-fab {
+  background: var(--clr-red);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(255, 69, 58, 0.3);
+}
+
+.delete-fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px rgba(255, 69, 58, 0.5);
+}
+
+.fab-btn:active {
+  transform: scale(0.9);
+}
+
+/* ─── SVG Wiring Layer ───────────────────────────────────────────────────────── */
+.wiring-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+  overflow: visible;
+}
+
+.wire-path {
+  transition: stroke-opacity 0.2s;
+}
+
+.wire-group:hover .wire-path {
+  stroke: #fff;
+  stroke-opacity: 1;
+}
+
+/* ─── Socket Handles ─────────────────────────────────────────────────────────── */
+.socket {
+  pointer-events: auto;
+  transition: r 0.12s, fill 0.12s;
+}
+
+.socket-out {
+  fill: #00F2FF;
+  stroke: rgba(0,0,0,0.5);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 4px #00F2FF);
+}
+
+.socket-out:hover {
+  r: 10;
+  fill: #fff;
+  filter: drop-shadow(0 0 8px #00F2FF);
+}
+
+.socket-in {
+  fill: rgba(0, 242, 255, 0.15);
+  stroke: #00F2FF;
+  stroke-width: 1.5;
+  opacity: 0;
+  transition: opacity 0.2s, r 0.12s;
+}
+
+.socket-in.socket-active {
+  opacity: 1;
+  r: 10;
+  fill: rgba(0, 242, 255, 0.3);
+  filter: drop-shadow(0 0 8px #00F2FF);
+}
+
+/* ─── Wiring Hint ───────────────────────────────────────────────────────────── */
+.wiring-hint {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--glass-lg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--accent-dim);
+  color: var(--text-2);
+  font-size: 0.75rem;
+  padding: 6px 16px;
+  border-radius: 100px;
+  pointer-events: none;
+  z-index: 200;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ─── Zoom Controls ─────────────────────────────────────────────────────────── */
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--glass-lg);
+  backdrop-filter: blur(16px);
+  padding: 3px;
+  border-radius: 8px;
+  border: 1px solid var(--border-sm);
+  pointer-events: auto;
+}
+
+.zoom-controls button {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.zoom-controls button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--accent);
+}
+
+.zoom-controls button:active {
+  transform: scale(0.9);
+}
+
+.zoom-reset {
+  width: auto !important;
+  padding: 0 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-3) !important;
+}
+
+.zoom-reset:hover {
+  color: #fff !important;
+}
+
+@media (max-width: 1024px) {
+  .blueprint-canvas .workspace-overlay {
+    top: 12px;
+    right: 12px;
+  }
+
+  .fab-actions {
+    bottom: 24px;
+    right: 24px;
+  }
+  .fab-btn {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 768px) {
+  .blueprint-canvas .workspace-overlay {
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .blueprint-canvas .workspace-tabs {
+    width: 100%;
+  }
+
+  .blueprint-canvas .workspace-tab {
+    flex: 1;
+    padding: 6px 8px;
+    font-size: 0.65rem;
+    text-align: center;
+  }
+
+  .blueprint-canvas .zoom-controls {
+    align-self: flex-end;
+  }
+
+  .fab-actions {
+    right: 16px;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    gap: 12px;
+  }
+
+  .fab-btn {
+    width: 48px;
+    height: 48px;
+  }
+
+  .wiring-hint {
+    left: 16px;
+    right: 16px;
+    width: auto;
+    bottom: 16px;
+    padding: 8px 12px;
+    font-size: 0.7rem;
+    white-space: normal;
+    text-align: center;
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .blueprint-canvas .workspace-overlay {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+  }
+
+  .blueprint-canvas .zoom-controls button {
+    width: 24px;
+    height: 24px;
+  }
+
+  .blueprint-canvas .zoom-reset {
+    padding: 0 8px;
+    font-size: 0.65rem;
+  }
+
+  .fab-actions {
+    right: 12px;
+    gap: 8px;
+  }
+
+  .fab-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .wiring-hint {
+    display: none;
+  }
+}
