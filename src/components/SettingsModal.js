@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import { useThemeContext } from '../hooks/useTheme';
 import { getUserColor } from '../hooks/useRoom';
+import ConfirmModal from './ConfirmModal';
 import './SettingsModal.css';
 
 // ─── Allowed MIME types ───────────────────────────────────────────────────────
@@ -398,22 +399,26 @@ const SettingsModal = ({
                 <span className="setting-desc">{session?.isHost ? 'Permanently delete this room and chat history' : 'Leave this room and return to join screen'}</span>
               </div>
               {session?.isHost ? (
-                showDeleteConfirm ? (
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button className="btn-danger-solid" type="button" onClick={() => onLeaveRoom(true)}>Confirm Delete</button>
-                    <button className="btn-secondary" type="button" onClick={() => setShowDeleteConfirm(false)}>Cancel</button>
-                  </div>
-                ) : (
-                  <button className="btn-danger-outline" type="button" onClick={() => setShowDeleteConfirm(true)}>
-                    <Icons.Trash /> Delete Room
-                  </button>
-                )
+                <button className="btn-danger-outline" type="button" onClick={() => setShowDeleteConfirm(true)}>
+                  <Icons.Trash /> Delete Room
+                </button>
               ) : (
                 <button className="btn-danger-outline" type="button" onClick={() => onLeaveRoom(false)}>
                   <Icons.Logout /> Leave Room
                 </button>
               )}
             </div>
+            
+            <ConfirmModal
+              isOpen={showDeleteConfirm}
+              title="Delete Room?"
+              message="This will permanently delete the room and all chat history for everyone. This action cannot be undone."
+              confirmText="Delete Room"
+              cancelText="Cancel"
+              variant="danger"
+              onConfirm={() => onLeaveRoom(true)}
+              onCancel={() => setShowDeleteConfirm(false)}
+            />
           </section>
 
           {/* ── About ────────────────────────────────────────────────── */}

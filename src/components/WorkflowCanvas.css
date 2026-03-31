@@ -11,20 +11,26 @@
   --border-glow: rgba(255, 255, 255, 0.12);
 
   --col-start: #22d3ee;
-  /* cyan */
   --col-start-glow: rgba(34, 211, 238, 0.25);
   --col-process: #818cf8;
-  /* indigo */
   --col-process-glow: rgba(129, 140, 248, 0.25);
   --col-decision: #fbbf24;
-  /* amber */
   --col-decision-glow: rgba(251, 191, 36, 0.25);
   --col-end: #f87171;
-  /* red */
   --col-end-glow: rgba(248, 113, 113, 0.25);
   --col-io: #34d399;
-  /* emerald */
   --col-io-glow: rgba(52, 211, 153, 0.25);
+
+  --start-border: rgba(34, 211, 238, 0.3);
+  --start-border-hover: rgba(34, 211, 238, 0.6);
+  --end-border: rgba(248, 113, 113, 0.3);
+  --end-border-hover: rgba(248, 113, 113, 0.6);
+  --process-border: rgba(129, 140, 248, 0.2);
+  --process-border-hover: rgba(129, 140, 248, 0.5);
+  --io-border: rgba(52, 211, 153, 0.2);
+  --decision-border: rgba(251, 191, 36, 0.3);
+  --decision-border-hover: rgba(251, 191, 36, 0.6);
+  --decision-bg: rgba(15, 17, 23, 0.95);
 
   --col-link: #334155;
   --col-link-active: #818cf8;
@@ -47,6 +53,51 @@
   --shadow-toolbar: 0 8px 40px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
+[data-theme="light"] {
+  --bg-canvas: #F8FAFC;
+  --bg-node: #FFFFFF;
+  --bg-node-hover: #F1F5F9;
+  --bg-glass: rgba(255, 255, 255, 0.9);
+  --bg-glass-light: rgba(0, 0, 0, 0.04);
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-glow: rgba(0, 0, 0, 0.15);
+  --grid-dot: rgba(0, 0, 0, 0.08);
+
+  --col-start: #0891B2;
+  --col-start-glow: rgba(8, 145, 178, 0.2);
+  --col-process: #6366F1;
+  --col-process-glow: rgba(99, 102, 241, 0.2);
+  --col-decision: #D97706;
+  --col-decision-glow: rgba(217, 119, 6, 0.2);
+  --col-end: #DC2626;
+  --col-end-glow: rgba(220, 38, 38, 0.2);
+  --col-io: #059669;
+  --col-io-glow: rgba(5, 150, 105, 0.2);
+
+  --start-border: rgba(8, 145, 178, 0.35);
+  --start-border-hover: rgba(8, 145, 178, 0.6);
+  --end-border: rgba(220, 38, 38, 0.35);
+  --end-border-hover: rgba(220, 38, 38, 0.6);
+  --process-border: rgba(99, 102, 241, 0.25);
+  --process-border-hover: rgba(99, 102, 241, 0.5);
+  --io-border: rgba(5, 150, 105, 0.25);
+  --decision-border: rgba(217, 119, 6, 0.35);
+  --decision-border-hover: rgba(217, 119, 6, 0.6);
+  --decision-bg: rgba(255, 255, 255, 0.95);
+
+  --col-link: #CBD5E1;
+  --col-link-active: #6366F1;
+  --col-accent: #6366F1;
+
+  --text-primary: #1E293B;
+  --text-secondary: #64748B;
+  --text-dim: #94A3B8;
+
+  --shadow-node: 0 2px 8px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  --shadow-node-selected: 0 4px 24px rgba(0, 0, 0, 0.15);
+  --shadow-toolbar: 0 8px 40px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
 /* ─── Canvas ──────────────────────────────────────────────────────────────── */
 .workflow-canvas {
   position: relative;
@@ -64,7 +115,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1px, transparent 0);
+  background-image: radial-gradient(circle at 1px 1px, var(--grid-dot, rgba(255, 255, 255, 0.07)) 1px, transparent 0);
   background-size: 28px 28px;
   pointer-events: none;
   z-index: 0;
@@ -209,13 +260,13 @@
 /* ── Type-specific styles ── */
 .workflow-node.start {
   border-radius: 999px;
-  border-color: rgba(34, 211, 238, 0.3);
+  border-color: var(--start-border);
   min-width: 140px;
   min-height: 60px;
 }
 
 .workflow-node.start:hover {
-  border-color: rgba(34, 211, 238, 0.6);
+  border-color: var(--start-border-hover);
 }
 
 .workflow-node.start.selected {
@@ -225,13 +276,13 @@
 
 .workflow-node.end {
   border-radius: 999px;
-  border-color: rgba(248, 113, 113, 0.3);
+  border-color: var(--end-border);
   min-width: 140px;
   min-height: 60px;
 }
 
 .workflow-node.end:hover {
-  border-color: rgba(248, 113, 113, 0.6);
+  border-color: var(--end-border-hover);
 }
 
 .workflow-node.end.selected {
@@ -240,11 +291,11 @@
 }
 
 .workflow-node.process {
-  border-color: rgba(129, 140, 248, 0.2);
+  border-color: var(--process-border);
 }
 
 .workflow-node.process:hover {
-  border-color: rgba(129, 140, 248, 0.5);
+  border-color: var(--process-border-hover);
 }
 
 .workflow-node.process.selected {
@@ -253,21 +304,21 @@
 }
 
 .workflow-node.decision {
-  border-radius: 4px; /* Small radius for slightly rounded diamonds */
+  border-radius: 4px;
   transform: rotate(45deg);
   transform-origin: center center;
-  border-color: rgba(251, 191, 36, 0.3);
+  border-color: var(--decision-border);
   min-width: 120px;
   min-height: 120px;
   overflow: visible;
   display: flex !important;
   align-items: center;
   justify-content: center;
-  background: rgba(15, 17, 23, 0.95);
+  background: var(--decision-bg);
 }
 
 .workflow-node.decision:hover {
-  border-color: rgba(251, 191, 36, 0.6);
+  border-color: var(--decision-border-hover);
 }
 
 .workflow-node.decision.selected {
@@ -305,7 +356,7 @@
   transform: skewX(-15deg);
   transform-origin: center center;
   border-left: 4px solid var(--col-io);
-  border-color: rgba(52, 211, 153, 0.2);
+  border-color: var(--io-border);
 }
 
 .workflow-node.io .node-inner {
@@ -494,7 +545,7 @@
 
 .node-delete-btn:hover {
   background: var(--col-end);
-  color: white;
+  color: var(--text-1);
   transform: scale(1.15);
   box-shadow: 0 0 10px rgba(248, 113, 113, 0.5);
 }
@@ -861,57 +912,90 @@
 }
 
 @media (max-width: 768px) {
+  .workflow-canvas {
+    touch-action: pan-x pan-y;
+  }
+
   .workflow-canvas .workspace-overlay {
-    top: 12px;
-    left: 12px;
-    right: 12px;
+    top: 10px;
+    left: 10px;
+    right: 10px;
     align-items: stretch;
     gap: 8px;
   }
 
   .workflow-canvas .workspace-tabs {
     width: 100%;
+    justify-content: center;
   }
 
   .workflow-canvas .workspace-tab {
     flex: 1;
-    padding: 6px 8px;
-    font-size: 10px;
+    padding: 6px 10px;
+    font-size: 11px;
     text-align: center;
+    min-height: 36px;
   }
 
   .workflow-canvas .zoom-controls {
     align-self: flex-end;
+    gap: 2px;
+  }
+
+  .workflow-canvas .zoom-controls button {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+  }
+
+  .workflow-canvas .zoom-level {
+    padding: 0 6px;
+    min-width: 38px;
+    font-size: 10px;
   }
 
   .workflow-toolbar {
-    left: 12px;
-    right: 12px;
-    bottom: max(12px, env(safe-area-inset-bottom));
+    left: 10px;
+    right: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
     width: auto;
     transform: none;
     justify-content: flex-start;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    padding: 5px 6px;
+    gap: 2px;
   }
 
   .workflow-toolbar button {
-    padding: 7px 10px;
+    padding: 8px 12px;
+    font-size: 12px;
+    min-height: 40px;
+    touch-action: manipulation;
+  }
+
+  .workflow-toolbar button svg {
+    width: 18px;
+    height: 18px;
   }
 
   .workflow-node {
     font-size: 12px;
-    padding: 8px 12px;
+    padding: 10px 14px;
+    min-width: 140px;
+    min-height: 64px;
   }
 
   .workflow-node.decision .node-label {
     max-width: 70px;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
   }
 
   .node-delete-btn {
     opacity: 1;
     transform: scale(1);
+    width: 22px;
+    height: 22px;
   }
 
   .minimap,
@@ -919,9 +1003,25 @@
     display: none;
   }
 
-
   .canvas-empty-hint {
     padding: 0 24px;
+  }
+
+  .workflow-canvas::before {
+    background-size: 24px 24px;
+  }
+
+  .workflow-port {
+    width: 14px;
+    height: 14px;
+  }
+
+  .port-in {
+    left: -8px;
+  }
+
+  .port-out {
+    right: -8px;
   }
 }
 
@@ -930,41 +1030,111 @@
     top: 8px;
     left: 8px;
     right: 8px;
+    gap: 6px;
+  }
+
+  .workflow-canvas .workspace-tabs {
+    padding: 3px;
+    border-radius: 8px;
+  }
+
+  .workflow-canvas .workspace-tab {
+    padding: 5px 8px;
+    font-size: 10px;
+    min-height: 32px;
   }
 
   .workflow-canvas .zoom-controls button {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
   }
 
   .workflow-canvas .zoom-level {
     min-width: 34px;
     font-size: 9px;
+    padding: 0 4px;
   }
 
   .workflow-toolbar {
     left: 8px;
     right: 8px;
-    gap: 4px;
+    gap: 2px;
+    padding: 4px 4px;
+    border-radius: 12px;
   }
 
   .workflow-toolbar button {
-    padding: 6px 8px;
+    padding: 6px 10px;
     font-size: 11px;
+    min-height: 36px;
+  }
+
+  .workflow-toolbar button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .toolbar-divider {
+    height: 24px;
+    margin: 0 2px;
   }
 
   .workflow-node {
     font-size: 11px;
-    padding: 8px 10px;
+    padding: 8px 12px;
+    min-width: 120px;
+    min-height: 56px;
   }
 
   .workflow-node.decision .node-label {
-    max-width: 64px;
-    font-size: 0.74rem;
+    max-width: 60px;
+    font-size: 0.76rem;
   }
 
   .workflow-port {
-    width: 11px;
-    height: 11px;
+    width: 12px;
+    height: 12px;
+  }
+
+  .port-in {
+    left: -7px;
+  }
+
+  .port-out {
+    right: -7px;
+  }
+
+  .canvas-empty-hint {
+    padding: 0 16px;
+  }
+
+  .canvas-empty-hint .big-icon {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 360px) {
+  .workflow-canvas .workspace-tab {
+    font-size: 9px;
+    padding: 4px 6px;
+  }
+
+  .workflow-toolbar button {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+
+  .workflow-toolbar button span {
+    display: none;
+  }
+
+  .workflow-toolbar button svg {
+    margin: 0;
+  }
+
+  .workflow-node {
+    font-size: 10px;
+    padding: 6px 10px;
   }
 }

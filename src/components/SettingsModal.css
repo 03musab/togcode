@@ -7,12 +7,16 @@
   height: 100%;
   display: grid;
   place-items: center;
-  background: rgba(0,0,0,0.5); /* Semi-transparent backdrop */
+  background: rgba(0,0,0,0.5);
   backdrop-filter: blur(8px);
   position: absolute;
   inset: 0;
   z-index: 1000;
   animation: pageFadeIn var(--dur-std) var(--ease-out);
+}
+
+[data-theme="light"] .settings-page-wrapper {
+  background: rgba(0,0,0,0.3);
 }
 
 .settings-card {
@@ -197,8 +201,8 @@
 .spinner {
   width: 18px;
   height: 18px;
-  border: 2px solid rgba(255,255,255,0.25);
-  border-top-color: #fff;
+  border: 2px solid var(--border-md);
+  border-top-color: var(--text-1);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
@@ -210,14 +214,14 @@
   right: -5px;
   width: 26px;
   height: 26px;
-  background: linear-gradient(135deg, var(--accent), #0055cc);
+  background: linear-gradient(135deg, var(--accent), var(--accent));
   border-radius: var(--r-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all var(--dur-fast);
-  color: #fff;
+  color: var(--text-1);
   box-shadow: 0 3px 10px var(--accent-glow);
 }
 .avatar-edit-label:hover {
@@ -433,7 +437,7 @@
 }
 .btn-danger-outline:hover {
   background: var(--clr-red);
-  color: #fff;
+  color: var(--text-1);
   border-color: var(--clr-red);
 }
 
@@ -483,8 +487,8 @@
 
 /* Footer buttons */
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent), #0055cc);
-  color: #fff;
+  background: var(--accent);
+  color: var(--text-1);
   border: none;
   padding: 10px 20px;
   border-radius: var(--r-md);
@@ -529,7 +533,7 @@
 
 .btn-danger-solid {
   background: var(--clr-red);
-  color: #fff;
+  color: var(--text-1);
   border: none;
   padding: 10px 20px;
   border-radius: var(--r-md);
@@ -551,16 +555,26 @@
 @media (max-width: 768px) {
   .settings-page-wrapper {
     padding: 16px;
+    align-items: flex-end;
   }
 
   .settings-card {
     max-width: none;
     max-height: calc(100dvh - 32px);
-    border-radius: 22px;
+    border-radius: 22px 22px 0 0;
   }
 
   .settings-header {
     padding: 18px 20px;
+  }
+
+  .settings-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .close-btn {
+    width: 32px;
+    height: 32px;
   }
 
   .settings-body {
@@ -568,32 +582,91 @@
     gap: 1.25rem;
   }
 
+  .section-heading {
+    font-size: 0.68rem;
+    padding-bottom: 6px;
+  }
+
   .user-profile-info {
     flex-direction: column;
+    padding: 14px;
+  }
+
+  .user-avatar-large {
+    width: 56px;
+    height: 56px;
+    font-size: 1.4rem;
+  }
+
+  .avatar-edit-label {
+    width: 24px;
+    height: 24px;
+  }
+
+  .user-details {
+    gap: 6px;
+  }
+
+  .settings-input {
+    padding: 10px 12px;
+    font-size: 0.88rem;
+  }
+
+  .user-email-display {
+    font-size: 0.78rem;
   }
 
   .avatar-picker-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .avatar-preset-btn {
+    border-radius: 10px;
   }
 
   .suite-info-grid {
     grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .info-item {
+    padding: 10px 12px;
+  }
+
+  .info-label {
+    font-size: 0.62rem;
+  }
+
+  .info-value {
+    font-size: 0.82rem;
   }
 
   .setting-item {
     flex-direction: column;
     align-items: stretch;
     gap: 12px;
+    padding: 12px 14px;
+  }
+
+  .setting-label {
+    font-size: 0.85rem;
+  }
+
+  .setting-desc {
+    font-size: 0.7rem;
   }
 
   .theme-preference-btn,
   .notification-toggle-btn {
     width: 100%;
     justify-content: center;
+    padding: 10px 14px;
+    font-size: 0.75rem;
   }
 
   .settings-footer {
-    padding: 16px 20px;
+    padding: 14px 20px;
     flex-direction: column;
     align-items: stretch;
   }
@@ -601,6 +674,7 @@
   .footer-actions {
     width: 100%;
     flex-wrap: wrap;
+    gap: 8px;
   }
 
   .settings-card .btn-primary,
@@ -609,47 +683,77 @@
   .settings-card .btn-danger-outline {
     width: 100%;
     justify-content: center;
+    padding: 12px 16px;
+    font-size: 0.8rem;
+  }
+
+  .about-section {
+    padding: 14px;
+  }
+
+  .about-content p {
+    font-size: 0.82rem;
   }
 }
 
 @media (max-width: 480px) {
   .settings-page-wrapper {
     padding: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+    align-items: flex-end;
   }
 
   .settings-card {
-    max-height: 100dvh;
-    border-radius: 0;
+    max-height: 95dvh;
+    border-radius: 18px 18px 0 0;
   }
 
   .settings-header {
-    padding: 16px;
+    padding: 14px 16px;
+  }
+
+  .settings-header h2 {
+    font-size: 1rem;
   }
 
   .settings-body {
     padding: 16px;
+    gap: 1rem;
   }
 
   .color-picker-grid {
     grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
   }
 
   .avatar-picker-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
   }
 
   .user-avatar-large {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
+    font-size: 1.2rem;
+  }
+
+  .user-profile-info {
+    padding: 12px;
+  }
+
+  .settings-input {
+    padding: 9px 11px;
+    font-size: 0.85rem;
   }
 
   .settings-footer {
-    padding: 16px;
+    padding: 12px 16px;
   }
 
   .footer-actions {
     width: 100%;
     flex-direction: column;
+    gap: 8px;
   }
 
   .settings-card .btn-primary,
@@ -658,6 +762,14 @@
   .settings-card .btn-danger-outline {
     width: 100%;
     justify-content: center;
+  }
+
+  .about-section {
+    padding: 12px;
+  }
+
+  .about-content p {
+    font-size: 0.8rem;
   }
 }
 

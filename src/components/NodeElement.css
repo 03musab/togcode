@@ -1,4 +1,18 @@
 /* src/components/NodeElement.css */
+:root {
+  --node-drag-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  --node-selected-bg: rgba(0, 242, 255, 0.05);
+  --node-io-bg: rgba(0,0,0,0.2);
+  --chip-hover-text: #fff;
+}
+
+[data-theme="light"] {
+  --node-drag-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  --node-selected-bg: rgba(0, 122, 255, 0.05);
+  --node-io-bg: rgba(0,0,0,0.05);
+  --chip-hover-text: #fff;
+}
+
 .node-element {
   position: absolute;
   width: 250px; /* Widened to accommodate 24px padding */
@@ -19,7 +33,7 @@
   cursor: grabbing;
   transform: scale(1.02);
   z-index: 1000;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: var(--node-drag-shadow);
   border-color: var(--accent);
 }
 
@@ -35,7 +49,7 @@
 .node-element.selected {
   border-color: var(--accent);
   box-shadow: 0 0 30px var(--accent-glow);
-  background: rgba(0, 242, 255, 0.05); /* Slight accent tint */
+  background: var(--node-selected-bg);
 }
 
 .node-header {
@@ -129,7 +143,7 @@
 
 /* ─── IO Section ──────────────────────────────────────────────────────────── */
 .node-io-section {
-  background: rgba(0,0,0,0.2);
+  background: var(--node-io-bg);
   border-radius: 12px;
   padding: 16px;
   display: flex;
@@ -322,7 +336,7 @@
 .suggestion-chip:hover {
   background: var(--accent-glow);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--chip-hover-text);
   box-shadow: var(--btn-glow);
 }
 
@@ -332,29 +346,101 @@
 
 @media (max-width: 768px) {
   .node-element {
-    width: 220px;
-    padding: 18px;
+    width: 200px;
+    padding: 16px;
+    touch-action: manipulation;
+  }
+
+  .node-header {
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+  }
+
+  .node-header-left {
+    gap: 6px;
+  }
+
+  .node-intent {
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+  }
+
+  .node-delete-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .node-content {
+    gap: 14px;
+    font-size: 0.7rem;
   }
 
   .node-io-section {
-    padding: 14px;
+    padding: 12px;
+    gap: 10px;
+    border-radius: 10px;
   }
 
   .node-footer {
     text-align: left;
+    font-size: 0.58rem;
+  }
+
+  .node-intent-select {
+    font-size: 0.68rem;
+    padding: 0 10px;
+    height: 36px;
+  }
+
+  .io-label {
+    font-size: 0.62rem;
+  }
+
+  .io-add-btn {
+    width: 20px;
+    height: 20px;
+  }
+
+  .io-field-row {
+    gap: 6px;
+  }
+
+  .io-field-key {
+    font-size: 0.58rem;
+    max-width: 60px;
+  }
+
+  .io-field-input {
+    font-size: 0.62rem;
+    height: 20px;
+  }
+
+  .node-description-input {
+    min-height: 48px;
+    font-size: 0.65rem;
+    padding: 6px 8px;
+  }
+
+  .suggestion-chips {
+    gap: 4px;
+  }
+
+  .suggestion-chip {
+    font-size: 0.56rem;
+    padding: 2px 6px;
   }
 }
 
 @media (max-width: 480px) {
   .node-element {
-    width: 190px;
-    padding: 14px;
+    width: 170px;
+    padding: 12px;
   }
 
   .node-header {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
+    gap: 8px;
   }
 
   .node-header-left {
@@ -364,30 +450,78 @@
 
   .node-intent-select {
     width: 100%;
+    font-size: 0.65rem;
+    height: 32px;
   }
 
   .node-delete-btn {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     align-self: flex-end;
+  }
+
+  .node-content {
+    gap: 12px;
+  }
+
+  .node-io-section {
+    padding: 10px;
+    gap: 8px;
   }
 
   .io-field-row {
     grid-template-columns: 1fr auto;
-    gap: 6px;
+    gap: 4px;
   }
 
   .io-field-key {
     grid-column: 1 / -1;
     max-width: none;
+    margin-bottom: 2px;
+  }
+
+  .io-remove-btn {
+    width: 20px;
+    height: 20px;
   }
 
   .node-description-input {
-    min-height: 56px;
-    font-size: 0.68rem;
+    min-height: 52px;
+    font-size: 0.62rem;
+    padding: 5px 7px;
   }
 
   .suggestion-chip {
     white-space: normal;
+    font-size: 0.54rem;
+  }
+
+  .semantic-suggestions {
+    gap: 4px;
+  }
+
+  .suggestions-label {
+    font-size: 0.55rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .node-element {
+    width: 155px;
+    padding: 10px;
+  }
+
+  .node-intent {
+    font-size: 0.62rem;
+  }
+
+  .node-content {
+    font-size: 0.68rem;
+    gap: 10px;
+  }
+
+  .node-io-section {
+    padding: 8px;
+    gap: 6px;
   }
 }

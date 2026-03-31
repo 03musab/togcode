@@ -1,5 +1,6 @@
 // src/components/ChatPanel.js
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import ConfirmModal from './ConfirmModal';
 import './ChatPanel.css';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -433,18 +434,22 @@ export default function ChatPanel({
 
           <div className="header-danger-action">
             {isHost ? (
-              showDeleteConfirm ? (
-                <div className="delete-confirm-group">
-                  <button className="stat-badge delete-confirm-btn" onClick={() => onLeaveRoom(true)}>Confirm</button>
-                  <button className="stat-badge" onClick={() => setShowDeleteConfirm(false)}>Cancel</button>
-                </div>
-              ) : (
-                <button className="stat-badge danger-action-btn" title="Delete Room" onClick={() => setShowDeleteConfirm(true)}>Delete</button>
-              )
+              <button className="stat-badge danger-action-btn" title="Delete Room" onClick={() => setShowDeleteConfirm(true)}>Delete</button>
             ) : (
               <button className="stat-badge danger-action-btn" title="Leave Hub" onClick={() => onLeaveRoom(false)}>Leave</button>
             )}
           </div>
+          
+          <ConfirmModal
+            isOpen={showDeleteConfirm}
+            title="Delete Room?"
+            message="This will permanently delete the room and all chat history for everyone. This action cannot be undone."
+            confirmText="Delete Room"
+            cancelText="Cancel"
+            variant="danger"
+            onConfirm={() => onLeaveRoom(true)}
+            onCancel={() => setShowDeleteConfirm(false)}
+          />
         </div>
       </div>
 
