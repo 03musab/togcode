@@ -128,16 +128,46 @@ body {
   left: 0;
   right: 0;
   height: var(--command-topbar-height);
-  padding: 0 28px;
+  padding: 0 20px;
   border-bottom: 1px solid var(--command-border);
   background: var(--command-topbar-bg);
   backdrop-filter: blur(18px);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
   z-index: 5;
   animation: commandRevealUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.command-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.command-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--command-border);
+  background: var(--command-pill-bg);
+  color: var(--command-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.command-icon-btn:hover {
+  background: var(--command-accent-bg);
+  border-color: var(--command-accent);
+  color: var(--command-accent);
+}
+
+.command-icon-btn svg {
+  flex-shrink: 0;
 }
 
 .command-topbar-text {
@@ -753,135 +783,50 @@ body {
   .command-topbar {
     padding: 12px 16px;
     height: auto;
-    min-height: var(--command-topbar-height);
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 12px;
+    min-height: 60px;
+    flex-wrap: nowrap;
   }
 
   .command-brand {
     font-size: 1.1rem;
+    flex-shrink: 0;
   }
 
-  .command-pill-row {
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    gap: 6px;
+  .command-topbar-actions {
+    flex-shrink: 0;
   }
 
-  .command-pill {
+  .command-icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 400px) {
+  .command-topbar {
+    padding: 10px 12px;
+  }
+
+  .command-brand {
+    font-size: 1rem;
+  }
+
+  .command-icon-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .command-icon-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.command-pill {
     min-height: 32px;
     padding: 0 10px;
     font-size: 10px;
   }
-
-  .command-pill-brand {
-    min-width: 32px;
-  }
-
-  .command-logout {
-    min-height: 34px;
-    padding: 0 12px;
-    font-size: 0.82rem;
-  }
-
-  .command-content {
-    padding: calc(var(--command-topbar-height) + 18px) 14px 14px;
-  }
-
-  .command-card {
-    padding: 16px;
-    border-radius: 16px;
-  }
-
-  .command-card-feature {
-    padding: 16px;
-  }
-
-  .command-card-feature .command-card-title,
-  .command-card-feature .command-section-title {
-    font-size: 1.2rem;
-  }
-
-  .command-card-feature .command-copy {
-    font-size: 0.9rem;
-  }
-
-  .command-card-large {
-    min-height: 200px;
-    padding: 20px;
-  }
-
-  .command-card-access {
-    padding: 20px;
-  }
-
-  .command-card-access .command-title {
-    font-size: clamp(1.6rem, 5vw, 2.2rem);
-  }
-
-  .command-card-access .command-copy {
-    font-size: 0.92rem;
-  }
-
-  .command-mode-toggle {
-    grid-template-columns: 1fr;
-  }
-
-  .command-mode-button {
-    min-height: 44px;
-    font-size: 0.85rem;
-  }
-
-  .command-form {
-    gap: 14px;
-    margin-top: 12px;
-  }
-
-  .command-input {
-    min-height: 48px;
-    padding: 13px 15px;
-    font-size: 14px;
-  }
-
-  .command-submit {
-    min-height: 48px;
-    padding: 12px 16px;
-  }
-
-  .command-stack-section {
-    padding: 18px;
-    border-radius: 20px;
-  }
-
-  .command-stack-card {
-    min-height: 160px;
-    padding: 16px;
-  }
-
-  .command-stack-value {
-    font-size: clamp(1rem, 2.5vw, 1.4rem);
-  }
-
-  .command-list-item {
-    padding: 14px 16px;
-    border-radius: 16px;
-  }
-
-  .command-list-value {
-    font-size: 0.92rem;
-  }
-
-  .command-card-stat,
-  .command-card-status {
-    min-height: 130px;
-    padding: 16px;
-  }
-
-  .command-stat-value {
-    font-size: 1.1rem;
-  }
-}
 
 @media (max-width: 480px) {
   .command-topbar {
@@ -891,18 +836,6 @@ body {
 
   .command-brand {
     font-size: 1rem;
-  }
-
-  .command-pill {
-    min-height: 30px;
-    padding: 0 8px;
-    font-size: 9px;
-  }
-
-  .command-logout {
-    min-height: 30px;
-    padding: 0 10px;
-    font-size: 0.78rem;
   }
 
   .command-content {

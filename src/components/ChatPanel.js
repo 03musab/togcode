@@ -656,7 +656,7 @@ export default function ChatPanel({
             value={input}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
-            placeholder={attachments.length > 0 ? "Message about files…" : "Talk to Togcode AI with @tagcode…"}
+            placeholder={attachments.length > 0 ? "About files…" : "Chat with @tagcode…"}
             disabled={aiThinking}
             rows={1}
             maxLength={MAX_INPUT_LENGTH}
@@ -685,7 +685,10 @@ export default function ChatPanel({
             </div>
 
             <div className="right-actions">
-              <span className="char-count">{input.length}/{MAX_INPUT_LENGTH}</span>
+              <div className="input-meta">
+                <span className="hint-mobile"><kbd>Enter</kbd> to send · <kbd>Shift</kbd>+<kbd>Enter</kbd> for newline</span>
+                <span className="char-count">{input.length}/{MAX_INPUT_LENGTH}</span>
+              </div>
               <button
                 className="send-btn"
                 onClick={handleSend}
@@ -703,12 +706,7 @@ export default function ChatPanel({
             </div>
           </div>
         </div>
-
-        <div className="hint text-center">
-          <span><kbd>Enter</kbd> to send · <kbd>Shift</kbd>+<kbd>Enter</kbd> for newline</span>
-        </div>
       </div>
-
     </div>
   );
 }
