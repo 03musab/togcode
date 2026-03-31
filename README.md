@@ -14,7 +14,7 @@ TogCode leverages a modern, distributed architecture to provide sub-millisecond 
 
 - **React.js (v19)**: Atomic components with reactive state management.
 - **Firebase Real-time DB**: Low-latency presence and message synchronization.
-- **Vanilla CSS3**: Custom design system featuring **Glassmorphism**, vibrant gradients, and premium micro-animations.
+- **Vanilla CSS3**: Custom design system featuring **Glassmorphism**, vibrant gradients, premium micro-animations, and full **light/dark theme support**.
 
 ### Backend
 
@@ -32,12 +32,13 @@ TogCode leverages a modern, distributed architecture to provide sub-millisecond 
 
 | Feature                       | Description                                                                            |
 | :---------------------------- | :------------------------------------------------------------------------------------- |
-| **Real-time Sync**      | Zero-latency collaboration powered by Firebase Database.                               |
-| **Elite AI Proxy**      | Direct access to TogCode AI (Senior staff level advice) via Cerebras.                  |
-| **Presence System**     | Granular user tracking: online status, typing indicators, and idle detection.          |
-| **Glassmorphic UI**     | Premium dark-mode aesthetic with blurred translucent surfaces and smooth transitions.  |
-| **Tiered AI Responses** | Support for**Pro** (High-perf) and **Lite** models for balanced workflows. |
-| **Collaborative Rooms** | Private, alphanumeric-protected rooms for team sprints.                                |
+| **Real-time Sync**            | Zero-latency collaboration powered by Firebase Database.                                 |
+| **Elite AI Proxy**           | Direct access to TogCode AI (Senior staff level advice) via Cerebras.                  |
+| **Presence System**           | Granular user tracking: online status, typing indicators, and idle detection.          |
+| **Light/Dark Theme**          | Toggle between light and dark modes with full component support.                        |
+| **Mobile Responsive**         | Optimized for mobile with canvas features gracefully disabled on smaller screens.        |
+| **Collaborative Rooms**       | Private, alphanumeric-protected rooms for team sprints.                                  |
+| **Session Management**        | Creators can delete rooms with confirmation dialog; leavers preserve session for others.|
 
 ---
 
@@ -46,6 +47,7 @@ TogCode leverages a modern, distributed architecture to provide sub-millisecond 
 ### Real-time Room Architecture
 
 ![Room Mockup](file:///C:/Users/musab/.gemini/antigravity/brain/30c8e7ca-dfc6-42a7-9601-96bb2f9043d7/togcode_room_mockup_1774286623063.png)
+
 *Collaborate with sub-millisecond precision. See who is online, who is typing, and receive instant architectural feedback from TogCode AI.*
 
 ### Deep AI Integration
@@ -70,6 +72,7 @@ TogCode leverages a modern, distributed architecture to provide sub-millisecond 
    git clone https://github.com/03musab/togcode.git
    cd togcode
    ```
+
 2. **Setup Backend**
 
    ```bash
@@ -78,6 +81,7 @@ TogCode leverages a modern, distributed architecture to provide sub-millisecond 
    # Create a .env file with CEREBRAS_API_KEY
    npm start
    ```
+
 3. **Setup Frontend**
 
    ```bash
@@ -86,6 +90,33 @@ TogCode leverages a modern, distributed architecture to provide sub-millisecond 
    # Create a .env file with FIREBASE config & REACT_APP_API_URL
    npm start
    ```
+
+---
+
+## 🎨 Theme Customization
+
+TogCode supports both light and dark themes. The theme preference is persisted in local storage and can be toggled from:
+
+- **Join Page**: Click the sun/moon icon in the top navigation bar
+- **Chat Page**: Click the theme toggle button in the header
+
+All components are fully themed including:
+- Chat panels and message bubbles
+- Blueprint and Workflow canvases
+- Settings modals
+- Navigation elements
+- Form inputs and buttons
+
+---
+
+## 📱 Mobile Support
+
+The application is optimized for mobile devices:
+
+- Canvas features (Blueprint and Workflow editors) are disabled on screens smaller than 768px
+- Chat functionality remains fully accessible on mobile
+- Responsive layouts adapt to all screen sizes
+- Touch-friendly interactive elements
 
 ---
 
