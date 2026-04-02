@@ -229,7 +229,7 @@ export default function App() {
     }
   };
 
-  if (authLoading) return <div className="splash-screen"><div className="splash-content"><div className="splash-logo"><span className="logo-tog">tog</span><span className="logo-code">code</span></div><div className="thinking-dots"><span /><span /><span /></div></div></div>;
+  if (authLoading) return <div className="splash-screen"><div className="splash-content"><div className="splash-logo"><img src="/logotg.png" alt="Togcode Logo" style={{ height: '64px', margin: 'auto' }} /></div><div className="thinking-dots"><span /><span /><span /></div></div></div>;
   if (!user) return <AuthPage onAuthSuccess={setUser} />;
   if (!session) return <JoinPage user={user} onLogout={handleLogout} onJoin={handleJoin} initialMode={joinPageMode} />;
 
@@ -240,7 +240,7 @@ export default function App() {
       <header className="app-header">
         <div className="header-left">
           <div className={`header-logo ${isSuiteView ? 'active-view' : ''}`} onClick={() => setCurrentView('chat')} title="Return to Intelligence Suite">
-            <span className="logo-tog">tog</span><span className="logo-code">code</span><span className="logo-ai">AI</span>
+            <img src="/logotg.png" alt="Togcode Logo" style={{ height: '26px' }} />
           </div>
         </div>
         <div className="header-center">
